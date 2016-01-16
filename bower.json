@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "dependencies": {
     "bootstrap": "~3.0.0",
-    "font-awesome": "~4.0.0",
+    "font-awesome": "4.5.0",
     "modernizr": "~2.6.2",
     "jquery": "~1.9.1",
-    "angular": "~1.4.8"
+    "angular": "~1.4.8",
+    "metro-bootstrap": "*",
+    "lodash": "~4.0.0"
   },
   "devDependencies": {
     "chai": "~3.4.2",
