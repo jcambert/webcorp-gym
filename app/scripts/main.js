@@ -50,7 +50,7 @@
             scope:{
                 color:'@color'
             },
-            template:'<div><div ng-transclude class="thumbnail tile"></div></div>',
+            template:'<div ><div ng-transclude class="thumbnail tile "></div></div>',
             link:function(scope,element,attrs){
                 element.find('div').addClass("tile-"+scope.color);
             }
@@ -93,7 +93,38 @@
     
     
     app.controller('MainCtrl', ['$scope', function ($scope) {
-  // Magie du contrôleur
+        $scope.hover=false;
+        $scope.flipped=true;
     }]);
     
+    
+    app.directive("flipper", function() {
+        return {
+            restrict: "E",
+            replace:true,
+            template: "<div class='flipper' ng-transclude ng-class='{ flipped: flipped }'></div>",
+            transclude: true,
+            scope: {
+                flipped: "="
+            }
+        };
+    });
+
+    app.directive("front", function() {
+        return {
+            restrict: "E",
+            replace:true,
+            template: "<div class='front flippertile' ng-transclude></div>",
+            transclude: true
+        };
+    });
+
+    app.directive("back", function() {
+        return {
+            restrict: "E",
+            replace:true,
+            template: "<div class='back flippertile' ng-transclude></div>",
+            transclude: true
+        }
+    });
 }(angular);

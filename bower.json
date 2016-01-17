@@ -8,7 +8,8 @@
     "jquery": "~1.9.1",
     "angular": "~1.4.8",
     "metro-bootstrap": "*",
-    "lodash": "~4.0.0"
+    "lodash": "~4.0.0",
+    "flip": "~1.0.19"
   },
   "devDependencies": {
     "chai": "~3.4.2",
