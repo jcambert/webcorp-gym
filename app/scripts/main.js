@@ -1,14 +1,94 @@
 !function (angular) {
 
    "use strict";
-    var app = angular.module('gymapp', []);
+    var app = angular.module('gymapp', ['ui.router']);
     
+    app.config(['$stateProvider','$urlRouterProvider',function($state,$route){
+       $route.otherwise("/");
+       
+       $state
+       .state("index",{
+           url:"",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{template:''}
+           }
+       })
+       .state("qui",{
+           url:"/qui",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/qui.html'}
+           }
+       })
+        .state("rejoindre",{
+           url:"/rejoindre",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/rejoindre.html'}
+           }
+       })
+        .state("action",{
+           url:"/action",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/action.html'}
+           }
+       })
+        .state("actu",{
+           url:"/actu",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/actu.html'}
+           }
+       })
+        .state("agenda",{
+           url:"/agenda",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/agenda.html'}
+           }
+       })
+        .state("video",{
+           url:"/video",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/video.html'}
+           }
+       })
+        .state("photo",{
+           url:"/photo",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/photo.html'}
+           }
+       })
+        .state("lien",{
+           url:"/lien",
+           views:{
+               "front":{templateUrl:'partials/index.html'},
+               "back":{templateUrl:'partials/lien.html'}
+           }
+       })
+       ;
+    }]);
+
     app.run(['$rootScope',function($rootScope){
         $rootScope.login=function(){  
           $rootScope.isLoggedIn=true;
         };
         $rootScope.isLoggedIn=false;
     }]);
+    
+    app.directive("deferredCloak", function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {       
+                attrs.$set("deferredCloak", undefined);
+                element.removeClass("deferred-cloak");
+            }
+        };
+    });
     
     app.directive('login',['$rootScope',function($rootScope){
         return{
@@ -48,11 +128,16 @@
             transclude:true,
             restrict:'E',
             scope:{
-                color:'@color'
+                color:'@color',
+                state:'='
             },
-            template:'<div ><div ng-transclude class="thumbnail tile "></div></div>',
+            template:'<div ><div ng-transclude class="thumbnail tile"></div></div>',
             link:function(scope,element,attrs){
                 element.find('div').addClass("tile-"+scope.color);
+                if('state' in attrs)
+                    scope.state=attrs['state'];
+                else  
+                    scope.state="index";
             }
         }
         
@@ -63,8 +148,9 @@
             replace:true,
             restrict:'A',
             link:function(scope,element,attrs){
-                element.addClass("col-sm-6 col-md-6 col-lg-3");
+                element.addClass("col-xs-12 col-sm-4 col-md-6 col-lg-4");
                 element.find('div').addClass("tile-wide");
+               
             }
         }
     }]);
@@ -74,8 +160,9 @@
             replace:true,
             restrict:'A',
             link:function(scope,element,attrs){
-                element.addClass("col-sm-3 col-md-3 col-lg-2");
+                element.addClass("col-xs-6 col-sm-2 col-md-3 col-lg-2");
                 element.find('div').addClass("tile-medium");
+                
             }
         }
     }]);
@@ -88,43 +175,63 @@
                     'google-plus':'https://plus.google.com/u/0/+AvenirGrandvillars',
                     'youtube':'https://www.youtube.com/user/AvenirDeGrandvillars'
                     };    
-    }]);
+    }]); 
     
     
     
     app.controller('MainCtrl', ['$scope', function ($scope) {
-        $scope.hover=false;
+       
         $scope.flipped=true;
+        $scope.flip = function() {
+           console.log('flip!');
+            $scope.flipped = !$scope.flipped;
+        };
+        
+         $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+             console.log('want flipping');
+            $scope.flip(); 
+            console.log(toState);
+        });
     }]);
     
     
-    app.directive("flipper", function() {
-        return {
-            restrict: "E",
-            replace:true,
-            template: "<div class='flipper' ng-transclude ng-class='{ flipped: flipped }'></div>",
-            transclude: true,
-            scope: {
-                flipped: "="
+    app.directive("flipper", function($rootScope, $timeout) {
+            return {
+                restrict: "E",
+                template: '<div class="flipper " ng-transclude ng-class="{ flipped: flipped }"></div>',
+                transclude: true,
+                scope: {
+                    flipped: "="
+                }
+            };
+        });
+        
+        app.directive("front",['$compile', function($compile) {
+            return {
+                restrict: "E",
+                scope:{
+                    view:'='
+                },
+                template: "<div class='front tileflip' ui-view='{{view}}' ></div>",
+                transclude: true,
+                link:function(scope,element,attrs){
+                    scope.view=attrs['view'];
+                }
+                
+            };
+        }]);
+        
+        app.directive("back", function() {
+            return {
+                restrict: "E",
+                scope:{
+                    view:"="
+                },
+                template: "<div class='back tileflip' ui-view='{{view}}' ></div>",
+                transclude: true,
+                link:function(scope,element,attrs){
+                    scope.view=attrs['view'];
+                }
             }
-        };
-    });
-
-    app.directive("front", function() {
-        return {
-            restrict: "E",
-            replace:true,
-            template: "<div class='front flippertile' ng-transclude></div>",
-            transclude: true
-        };
-    });
-
-    app.directive("back", function() {
-        return {
-            restrict: "E",
-            replace:true,
-            template: "<div class='back flippertile' ng-transclude></div>",
-            transclude: true
-        }
-    });
+        });  
 }(angular);

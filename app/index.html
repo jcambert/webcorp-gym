@@ -15,18 +15,22 @@
     <script src="bower_components/modernizr/modernizr.js"></script>
     <!-- endbuild -->
   </head>
-  <body ng-controller="MainCtrl">
+  <body ng-controller="MainCtrl" deferred-cloak>
       <header id="header">
         <div class="top-bar hidden-xs">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-6 ">
-                        <div class="top-number"><p><i class="fa fa-envelope"></i> <a href="mailto:gym.grandvillars@gmail.com" style="color:#fff">gym.grandvillars@gmail.com</a></p></div>
+                        <div class="top-number pull-left"><p><i class="fa fa-envelope"></i> <a href="mailto:gym.grandvillars@gmail.com" style="color:#fff">gym.grandvillars@gmail.com</a></p></div>
                     </div>
-                    <div class="col-sm-6 ">
-                        <login></login>
-                        <socials></socials>
+                    <div class="col-sm-3 ">
+                        <login class="pull-right"></login>
                     </div>
+                     <div class="col-sm-3 ">
+                        <socials class="pull-left"></socials>
+                        <button ui-sref="index"/>
+                    </div>
+                    
                 </div>
             </div> 
         </div> 
@@ -40,7 +44,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     
-                    <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="logo"></a>
+                    <a class="navbar-brand pull-left" href="index.html"><img src="images/logo.png" alt="logo"></a>
                     <div class="visible-xs">
                         <login></login>
                         <user></user>
@@ -70,83 +74,44 @@
     </nav> 
 </header> 
       <div class="container-fluid" >
-          <div class="row">
-              <tile wide color="amethyst" >
-                  <a href="#" >
-                    <h2>Qui sommes-nous?</h2>
-                    <i class="fa fa-3x fa-heart"></i>
-                  </a>
-                  
-              </tile>
-              <tile medium color="pink">
-                  <a href="#" >
-                    <h1>Nous Rejoindre</h1>
-                    <i class="fa fa-3x fa-user-plus"></i>
-                  </a>
-              </tile>
-              <tile medium color="magenta">
-                  <a href="#" >
-                    <h1>Les actions</h1>
-                    <i class="fa fa-3x fa-trophy"></i>
-                  </a>
-              </tile>
-               <tile wide color="asbestos">
-                  <a href="#" >
-                    <h2>Actualit&eacute;s</h2>
-                    <i class="fa fa-3x fa-newspaper-o"></i>
-                  </a>
-              </tile>
-              <tile wide color="wisteria">
-                  <a href="#" >
-                    <h1>Agenda</h1>
-                    <i class="fa fa-3x fa-calendar"></i>
-                  </a>
-              </tile>
-              <tile wide color="magenta">
-                  <a href="#" >
-                    <h1>Vid&eacute;os</h1>
-                    <i class="fa fa-3x fa-youtube"></i>
-                  </a>
-              </tile>
-              <tile wide color="teal">
-                  <a href="#" >
-                    <h2>Photos</h2>
-                    <i class="fa fa-3x fa-picture-o"></i>
-                  </a>
-              </tile>-
-              <tile wide color="turquoise">
-                  <a href="#" >
-                    <h2>Liens</h2>
-                    <i class="fa fa-3x fa-external-link"></i>
-                  </a>
-              </tile>
-              
-              
-              <div wide="" color="teal" class=" col-sm-6 col-md-6 col-lg-3">
-                  <div ng-transclude="" class="thumbnail tile  tile-wide tile-teal" data-ng-mouseenter="hover=true" data-ng-mouseleave="hover=false">
-                    <a href="#" class="front" ng-hide="hover" >
-                        <h2>Front</h2>
-                        <i class="fa fa-3x fa-picture-o"></i>
-                    </a>
-                    <a href="#" class="back" ng-show="hover">
-                        <h2>Back</h2>
-                        <i class="fa fa-3x fa-picture-o"></i>
-                    </a>
-                </div>
-              </div> 
-              
-              <flipper flipped="flipped" horizontal>
-                <front>
-                    the front!
-                </front>
-                <back>
-                    the back!
-                </back>
-            </flipper>
-        </div>
+            <div class="row">
+                <flipper flipped="flipped" vertical>
+                    <front view='front'></front>
+                    <back  view='back'></back>
+                </flipper>  
+            </div>
       </div>
-  
 
+    <!--<div class="container" ng-controller="MainCtrl">
+        <div class="row">
+            <div class="col-md-1">
+                <flipper flipped="flipped" horizontal>
+                    <front>
+                        <tile wide color="turquoise">
+                            <a href="#" >
+                                <h2>Liens</h2>
+                                <i class="fa fa-3x fa-external-link"></i>
+                            </a>
+                        </tile>
+                    </front>
+                    <back>
+                        <tile wide color="turquoise">
+                            <a href="#" >
+                                <h2>Cliquer pour suivre</h2>
+                                <i class="fa fa-3x fa-external-link"></i>
+                            </a>
+                        </tile>
+                    </back>
+                </flipper>
+                
+            </div>
+            <div class="col-lg-1">
+                <div class="button-container">
+                    <button ng-click="flip()">Flip!</button>
+                </div>
+            </div>
+        </div>
+    </div>-->
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -162,7 +127,7 @@
     </script>
 
     <!-- build:js scripts/vendor/jquery.js -->
-    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/flip/dist/jquery.flip.js"></script>
     <!-- endbuild -->
     
@@ -183,6 +148,7 @@
     
     <!-- build:js scripts/angular.js -->
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!--<script src="bower_components/lodash/dist/lodash.js"></script>-->
     <!-- endbuild -->
     
@@ -193,7 +159,7 @@
    <script>
        $(document).ready(function(){
          
-           $('.card').flip({autoSize:false});
+          // $('.card').flip({autoSize:false});
           
        });
    </script>
