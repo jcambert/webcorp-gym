@@ -17,7 +17,7 @@
   </head>
   <body ng-controller="MainCtrl" deferred-cloak>
       <header id="header">
-        <div class="top-bar hidden-xs">
+        <!--<div class="top-bar hidden-xs">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-6 ">
@@ -33,7 +33,7 @@
                     
                 </div>
             </div> 
-        </div> 
+        </div> -->
         <nav class="navbar navbar-inverse " role="banner">
             <div class="container">
                 <div class="navbar-header">
@@ -44,30 +44,22 @@
                         <span class="icon-bar"></span>
                     </button>
                     
-                    <a class="navbar-brand pull-left" href="index.html"><img src="images/logo.png" alt="logo"></a>
-                    <div class="visible-xs">
-                        <login></login>
-                        <user></user>
-                        <socials></socials>
-                    </div>
+                    <a class="navbar-brand pull-left logo" href="index.html"><img  src="assets/images/logo0.png" alt="logo"></a>
+                    <login class="pull-left"></login>
+                    <socials class="pull-left"></socials>
+                  
                 </div>
             <div class="collapse navbar-collapse navbar-right">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.html">Home</a></li>
-                    <li><a href="about-us.html">About Us</a></li>
-                    <li><a href="services.html">Services</a></li>
-                    <li><a href="portfolio.html">Portfolio</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pages <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="blog-item.html">Blog Single</a></li>
-                            <li><a href="pricing.html">Pricing</a></li>
-                            <li><a href="404.html">404</a></li>
-                            <li><a href="shortcodes.html">Shortcodes</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="contact-us.html">Contact</a></li>
+                    <li class="active"><a ui-sref="index">Accueil</a></li>
+                    <li><a ui-sref="qui">Nous</a></li>
+                    <li><a ui-sref="rejoindre">Rejoindre</a></li>
+                    <li><a ui-sref="action">Actions</a></li>
+                    <li><a ui-sref="actu">Actualit&eacute;s</a></li>
+                    <li><a ui-sref="agenda">Agenda</a></li>
+                    <li><a ui-sref="video">Vid&eacute;os</a></li>
+                    <li><a ui-sref="photo">Photos</a></li>
+                    <li><a ui-sref="lien">Liens</a></li>
                 </ul>
             </div>
         </div> 
@@ -127,7 +119,7 @@
     </script>
 
     <!-- build:js scripts/vendor/jquery.js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/flip/dist/jquery.flip.js"></script>
     <!-- endbuild -->
     

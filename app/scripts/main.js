@@ -94,7 +94,7 @@
         return{
             replace:true,
             restrict:'E',
-            template:'<a href="#" ng-click="login()" ng-hide="isLoggedIn" class="btn btn-default btn-circle"><i class="fa fa-3x fa-user"></i></a>',
+            template:'<a href="#" ng-click="login()" ng-hide="isLoggedIn" class="login"><i class="fa fa-3x fa-user"></i></a>',
         }
     }]);
     
@@ -111,7 +111,7 @@
             replace:true,
             transclude:true,
             restrict:'E',
-            template:'<div class="social"><ul class="social-share"><li ng-repeat="(key,value) in socials"><a href="#" ng-click="navigate(value)"><i class="fa fa-{{key}}"></i></a></li></ul></div>',
+            template:'<div ng-repeat="(key,value) in socials"><a href="#" ng-click="navigate(value)" class="social"><i class="fa fa-2x fa-{{key}}"></i></a></div>',
             controller:function($scope){
                 $scope.navigate=function(url){
                     window.open(url,'_blank');

@@ -16,7 +16,8 @@
 @navbar-color:#F6B3FF;
 @background-color:#A3B6B1;
 @menu-text-color:#B500FF;
-
+@navbar-inverse-bg:#6E0062;
+@navbar-inverse-link-active-bg:#7333BA;
 [deferred-cloak], [data-deferred-cloak], [x-deferred-cloak], .deferred-cloak {
     display: none;
 }
@@ -71,7 +72,7 @@ flipper { /*float:left;width:250px; height:250px; margin-right:15px; display:blo
 			}
            
 /* ****** */
-
+/*
 .navbar-fixed-top {
     top: 42px;
     border-width: 0 0 1px;
@@ -92,11 +93,29 @@ flipper { /*float:left;width:250px; height:250px; margin-right:15px; display:blo
     border-bottom: 1px solid #222;
     line-height: 28px;
 }
-
+*/
 .top-number {
     color: #fff;
 }
 
+
+.login, .social, .logo{
+    .btn;
+    .btn-default;
+    .btn-circle;
+    color:@navbar-inverse-bg;
+}
+
+.login:hover ,.social:hover , .logo:hover{
+    color:#fff;
+    background-color:@navbar-inverse-bg;
+    border:0px;
+}
+.logo img{
+    width:40px;
+    height:40px;
+}
+/*
 .social {
     text-align: right;
 }
@@ -104,7 +123,7 @@ flipper { /*float:left;width:250px; height:250px; margin-right:15px; display:blo
 .social-share {
     display: inline-block;
     list-style: none;
-    padding: 0;
+    padding-top:  10px;
     margin: 0;
 }
 
@@ -115,14 +134,16 @@ ul.social-share li {
 ul.social-share li a {
     display: inline-block;
     color: #fff;
-    background: #404040;
-    width: 25px;
-    height: 25px;
-    line-height: 25px;
-    text-align: center;
-    border-radius: 2px;
+    background: @navbar-inverse-bg;
+    width: 40px;
+    height: 40px;
+    text-align: bottom;
+    border-radius: 4px;
 }
-
+ul.social-share li a:hover{
+    background: #fff;
+    color: @navbar-inverse-bg;
+}*/
 a {
     color: #c52d2f;
     -webkit-transition: color 300ms,background-color 300ms;
