@@ -18,6 +18,8 @@
 @menu-text-color:#B500FF;
 @navbar-inverse-bg:#6E0062;
 @navbar-inverse-link-active-bg:#7333BA;
+@btn-color:#fff;
+
 [deferred-cloak], [data-deferred-cloak], [x-deferred-cloak], .deferred-cloak {
     display: none;
 }
@@ -94,8 +96,15 @@ flipper { /*float:left;width:250px; height:250px; margin-right:15px; display:blo
     line-height: 28px;
 }
 */
+
+section article header{
+    h1{
+        font: bold italic;
+        text-decoration: underline;
+    }
+}
 .top-number {
-    color: #fff;
+    color: @btn-color;
 }
 
 
@@ -107,13 +116,29 @@ flipper { /*float:left;width:250px; height:250px; margin-right:15px; display:blo
 }
 
 .login:hover ,.social:hover , .logo:hover{
-    color:#fff;
+    color:@btn-color;
     background-color:@navbar-inverse-bg;
     border:0px;
 }
 .logo img{
     width:40px;
     height:40px;
+}
+
+.home{
+    .btn;
+    .btn-default;
+    .btn-circle;
+     color:@navbar-inverse-bg;
+    width:65px;
+    height: 65px;
+    border-radius: 32px;
+}
+
+.home:hover{
+    color:@btn-color;
+    background-color:@navbar-inverse-bg;
+
 }
 /*
 .social {

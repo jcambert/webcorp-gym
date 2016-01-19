@@ -1,14 +1,14 @@
 !function (angular) {
 
    "use strict";
-    var app = angular.module('gymapp', ['ui.router']);
+    var app = angular.module('gymapp', [ 'ngResource','ui.router','GoogleAuth.services','GoogleAuth.models']);
     
     app.config(['$stateProvider','$urlRouterProvider',function($state,$route){
        $route.otherwise("/");
        
        $state
        .state("index",{
-           url:"",
+           url:"/",
            views:{
                "front":{templateUrl:'partials/index.html'},
                "back":{template:''}
@@ -73,14 +73,26 @@
        ;
     }]);
 
-    app.run(['$rootScope',function($rootScope){
+    app.run(['$rootScope','AuthenticationModel','AuthenticationService',function($rootScope,authModel,auth){
         $rootScope.login=function(){  
-          $rootScope.isLoggedIn=true;
+           tryAuthenticate(auth,false,function(){
+               $rootScope.isLoggedIn=true;
+           })
+          
         };
         $rootScope.isLoggedIn=false;
     }]);
     
-    app.directive("deferredCloak", function () {
+    app.directive("page",[function(){
+        return{
+            replace:true,
+            restrict:'E',
+            transclude:true,
+            templateUrl:'partials/page.html'
+        }
+    }]);
+    
+    app.directive("deferredCloak", [function () {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {       
@@ -88,7 +100,34 @@
                 element.removeClass("deferred-cloak");
             }
         };
-    });
+    }]);
+    
+    app.directive('home',[function(){
+        return{
+            replace:true,
+            restrice:'E',
+            template:'<a href="#" ui-sref="index" class="home"><i class="fa fa-home fa-5x"></i></a>'
+            
+        }
+    }]);
+    
+    app.directive('logo',['$compile',function($compile){
+        return{
+            replace:true,
+            restrict:'E',
+            link:function(scope,element,attr){
+                var el=angular.element('<a class="navbar-brand pull-left logo" ><img alt="logo"></a>');
+                if('view' in attr){
+                    el.attr('ui-sref',attr['view']);
+                }
+                if('image' in attr){
+                    el.find('img').attr('src',attr['image']);
+                }
+                element.html(el);
+                $compile(el)(scope);
+            }
+        }
+    }])
     
     app.directive('login',['$rootScope',function($rootScope){
         return{
@@ -120,6 +159,35 @@
             }
         }
         
+    }]);
+    
+    app.directive('tiles',['$compile',function($compile){
+        return{
+            replace:true,
+            
+            restrict:'E',
+            link:function(scope,element,attr){
+                
+                //if(scope.tiles==undefined)return;
+                console.log('tiles');
+                console.dir(scope);
+                var tpl='<tile><a href="#"><h2></h2><i class="fa fa-3x"/></a></tile>';
+                var el=angular.element('<div></div>');
+                _.map(scope.tiles,function(tile){
+                    console.dir(tile);
+                     var html=angular.element('<tile '+tile.size+' color="'+tile.color+'" ui-sref="'+tile.state+'"></tile');
+                                          
+                     var a=angular.element('<a href="#"></a>');
+                     a.append('<h2>'+tile.title+'</h2>');
+                     a.append('<i class="fa fa-3x fa-'+tile.icon+'"/>');
+                     
+                     html.append(a);
+                     el.append(html);
+                });
+                element.html(el);
+                $compile(el)(scope);
+            }
+        }
     }]);
     
     app.directive('tile',[function(){
@@ -192,9 +260,24 @@
             $scope.flip(); 
             console.log(toState);
         });
+        
+        
     }]);
     
-    
+    app.controller('TilesCtrl',['$scope',function($scope){
+        $scope.tiles=[
+            {size:'wide',color:'amethyst',state:'qui',title:'Qui sommes-nous?',icon:'heart'},
+            {size:'medium',color:'pink',state:'rejoindre',title:'Rejoindre',icon:'user-plus'},
+            {size:'medium',color:'magenta',state:'action',title:'Actions',icon:'trophy'},
+            {size:'wide',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
+            {size:'wide',color:'wisteria',state:'agenda',title:'Agenda',icon:'calendar'},
+            {size:'wide',color:'magenta',state:'video',title:'Vidéos',icon:'youtube'},
+            {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
+            {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
+            ];
+        
+        
+    }]);
     app.directive("flipper", function($rootScope, $timeout) {
             return {
                 restrict: "E",
@@ -234,4 +317,4 @@
                 }
             }
         });  
-}(angular);
+}(angular,_);

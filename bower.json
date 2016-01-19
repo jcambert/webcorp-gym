@@ -10,7 +10,8 @@
     "metro-bootstrap": "*",
     "lodash": "~4.0.0",
     "flip": "~1.0.19",
-    "angular-ui-router": "~0.2.15"
+    "angular-ui-router": "~0.2.15",
+    "angular-resource": "~1.4.8"
   },
   "devDependencies": {
     "chai": "~3.4.2",
