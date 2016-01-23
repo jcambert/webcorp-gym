@@ -1,7 +1,16 @@
 !function (angular) {
 
    "use strict";
-    var app = angular.module('gymapp', [ 'ngResource','ui.router','GoogleAuth.services','GoogleAuth.models']);
+    var app = angular.module('gymapp', [ 
+        'ngResource',
+        'ui.router',
+        "ngSanitize",
+        "com.2fdevs.videogular",
+        "com.2fdevs.videogular.plugins.controls",
+        "com.2fdevs.videogular.plugins.overlayplay",
+        "com.2fdevs.videogular.plugins.poster",
+        'angular-google-gapi'
+    ]);
     
     app.config(['$stateProvider','$urlRouterProvider',function($state,$route){
        $route.otherwise("/");
@@ -73,14 +82,49 @@
        ;
     }]);
 
-    app.run(['$rootScope','AuthenticationModel','AuthenticationService',function($rootScope,authModel,auth){
-        $rootScope.login=function(){  
-           tryAuthenticate(auth,false,function(){
-               $rootScope.isLoggedIn=true;
-           })
-          
+    app.run(['$rootScope','$state','GApi', 'GAuth',function($rootScope,$state,GApi, GAuth){
+         var CLIENT = '474879262930-7smn8osaaaq97iob9v22mmflnt2tmvh3.apps.googleusercontent.com';
+         GAuth.setClient(CLIENT);
+         GApi.load('oauth2', 'v2');
+         GAuth.setScope("https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar.readonly");
+         GAuth.checkAuth().then(
+            function () {
+                console.log('user identified');
+                console.log($rootScope.gapi.user.picture);
+                $state.go('index');
+            },
+            function() {
+                console.log('User non identified');
+                $state.go('index');     
+                            
+                }
+            );
+         console.log('running...');
+         
+    }]);
+    
+    
+     app.controller('MainCtrl', ['$scope','GAuth', '$state', function ($scope, GAuth, $state) {
+       
+        $scope.flipped=true;
+        $scope.flip = function() {
+            $scope.flipped = !$scope.flipped;
         };
-        $rootScope.isLoggedIn=false;
+        
+         $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+            $scope.flip(); 
+        });
+        
+         $scope.doSignup = function() {
+            GAuth.login().then(function(){
+                
+                $state.go('index'); 
+            }, function() {
+                console.log('login fail');
+            });
+        };
+        
+        
     }]);
     
     app.directive("page",[function(){
@@ -88,6 +132,9 @@
             replace:true,
             restrict:'E',
             transclude:true,
+            scope:{
+                title:'@title'
+            },
             templateUrl:'partials/page.html'
         }
     }]);
@@ -133,15 +180,32 @@
         return{
             replace:true,
             restrict:'E',
-            template:'<a href="#" ng-click="login()" ng-hide="isLoggedIn" class="login"><i class="fa fa-3x fa-user"></i></a>',
+            template:'<a href="#" ng-click="doSignup()" ng-hide="gapi.user!=undefined" class="login"><i class="fa fa-3x fa-user"></i></a>',
+            
         }
+    }]);
+    
+    app.directive('follow',['$compile',function($compile){
+        return{
+            replace:'true',
+            restrict:'E',
+           
+            //template:'<div class="g-follow" data-annotation="bubble" data-height="24" data-href="//plus.google.com/u/0/116763107480158322881" data-rel="publisher"></div>',
+            link:function(scope,element,attr){
+                var tpl=angular.element('<div class="g-follow" data-annotation="bubble" data-height="24" data-href="//plus.google.com/u/0/'+attr['who']+'" data-rel="publisher"></div>');
+                
+                element.html(tpl);
+                $compile(tpl)(scope);
+            }
+        }
+        
     }]);
     
     app.directive('user',[function(){
         return{
             replace:true,
             restrict:'E',
-            template:'<span ng-show="isLoggedIn" style="color:#fff;margin-top:10px">Bonjour Jean-Christophe</span>'
+            template:'<a href="#" ng-click="doSignout()" ng-if="gapi.user!=undefined" class="user"><img ng-src="{{gapi.user.picture}}"/></a>'
         }
     }]);
 
@@ -169,12 +233,12 @@
             link:function(scope,element,attr){
                 
                 //if(scope.tiles==undefined)return;
-                console.log('tiles');
-                console.dir(scope);
+                //console.log('tiles');
+                //console.dir(scope);
                 var tpl='<tile><a href="#"><h2></h2><i class="fa fa-3x"/></a></tile>';
                 var el=angular.element('<div></div>');
                 _.map(scope.tiles,function(tile){
-                    console.dir(tile);
+                    //console.dir(tile);
                      var html=angular.element('<tile '+tile.size+' color="'+tile.color+'" ui-sref="'+tile.state+'"></tile');
                                           
                      var a=angular.element('<a href="#"></a>');
@@ -247,22 +311,7 @@
     
     
     
-    app.controller('MainCtrl', ['$scope', function ($scope) {
-       
-        $scope.flipped=true;
-        $scope.flip = function() {
-           console.log('flip!');
-            $scope.flipped = !$scope.flipped;
-        };
-        
-         $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-             console.log('want flipping');
-            $scope.flip(); 
-            console.log(toState);
-        });
-        
-        
-    }]);
+   
     
     app.controller('TilesCtrl',['$scope',function($scope){
         $scope.tiles=[
@@ -317,4 +366,29 @@
                 }
             }
         });  
+        
+        app.controller('VideoCtrl',
+		["$sce", function ($sce) {
+			this.config = {
+				sources: [
+					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
+					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/webm"},
+					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/ogg"}
+				],
+				tracks: [
+					{
+						src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
+						kind: "subtitles",
+						srclang: "en",
+						label: "English",
+						default: ""
+					}
+				],
+				theme: "bower_components/videogular-themes-default/videogular.css",
+				plugins: {
+					poster: "http://www.videogular.com/assets/images/videogular.png"
+				}
+			};
+		}]
+	);
 }(angular,_);

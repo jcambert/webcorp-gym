@@ -474,6 +474,7 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
 # them.
 <FilesMatch "(\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|swp)|~)$">
   Order allow,deny
+  Allow from all
   Deny from all
   Satisfy All
 </FilesMatch>

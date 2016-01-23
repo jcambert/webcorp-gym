@@ -1,12 +1,15 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-md-6 col-md offset-3" >
-			<home/>
+		<div class="col-md-1 col-sd-1" >
+            <home/>
 		</div>
+        <div class="col-md-4 col-sd-6 pull-left" ng-if="title">
+            <h1 ><u>{{title}}</u></h1>
+        </div>
 	</div>
 	<div class="row">
-		<div class="col-md-6 col-md offset-3" >
+		<div class="col-md-6 " >
 			<section ng-transclude>
 				
 			</section>

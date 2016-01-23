@@ -1,238 +1,366 @@
-'use strict';
+angular.module('angular-google-gapi', [])
 
-(function(exports){
+angular.module('angular-google-gapi').factory('GClient', ['$document', '$q', '$timeout', '$interval', '$window',
+        function ($document, $q, $timeout, $interval, $window) {
 
-    var userRoles = {
-		none:   0, // 000
-        public: 1, // 001
-        user:   2, // 010
-        admin:  4  // 100
-    };
+        var LOAD_GAE_API = false;
+        var URL = 'https://apis.google.com/js/client.js';
 
-    exports.userRoles = userRoles;
-    exports.accessLevels = {
-        public: userRoles.public | // 111
-                userRoles.user   | 
-                userRoles.admin,   
-        anon:   userRoles.public,  // 001
-        user:   userRoles.user |   // 110
-                userRoles.admin,                    
-        admin:  userRoles.admin    // 100
-    };
+        function loadScript(src) {
+                var deferred = $q.defer();
+                var script = $document[0].createElement('script');
+                script.onload = function (e) {
+                    $timeout(function () {
+                        deferred.resolve(e);
+                    });
+                };
+                script.onerror = function (e) {
+                    $timeout(function () {
+                        deferred.reject(e);
+                    });
+                };
+                script.src = src;
+                $document[0].body.appendChild(script);
+                return deferred.promise;
+        };
 
-})(typeof exports === 'undefined'? this['routingConfig']={}: exports);
+        function load(callback) {
+                loadScript(URL).then(function() {
+                    var isok = function(callback) {
+                        if($window.gapi.client != undefined) {
+                            callback();
+                            $interval.cancel(check);
+                        }
+                    }
+                    isok(callback);
+                    var check = $interval(function() {
+                        isok(callback);
+                    }, 10);
+                    LOAD_GAE_API = true;
+                });
+        }
 
+        return {
 
-var handleGoogleClientLoad = function() {
+            get: function(callback){
+                if(LOAD_GAE_API)
+                    callback();
+                else
+                    load(callback);
 
-  var $injector = angular.injector(['ng','GoogleAuth.services']);
-  var InitializationService = $injector.get('InitializationService');
-  var AuthenticationService = $injector.get('AuthenticationService');
- 
-  InitializationService.initialize().then(function() {
-   
-    AuthenticationService.login(true).then(
-	 function(response) {
-      var $scope = angular.element('body').scope();
-	  
-	  if(! $scope){
-		console.error('Scope doesnt exist');
-		
-		}else{
-	  
-		  $scope.$apply(function() {
-			$scope.user = response.user;
-			
-		  });
-			$scope.$broadcast('initialAuthenticationMade',{status:'ok'});
-		}
-    },
-	 function(err){
-	   var $scope = angular.element('body').scope();
-       $scope.$broadcast('initialAuthenticationMade',{status:'error'});
-	 });
-  });
-};
-
-
-var tryAuthenticate = function(authService,mode,callback){
-	//console.log('tryAuthenticate');
-	authService.login(mode).then(
-		function(response){
-			userAuthenticated(response.user);
-			if(callback)callback();
-		}
-	);
-}
-
-var userAuthenticated = function(user) {
-	//console.log('userAuthenticated');
-      var $scope = angular.element('body').scope();
-	  if(! $scope) console.error('Scope doesnt exist');
-	  
-      //$scope.$apply(function() {
-        $scope.user = user;
-		
-      //});
-     /* EventService.loadEvents().then(function(events) {
-        $scope.$apply(function() {
-          $scope.events = events;
-        });
-      });*/
-    };
-
-angular.module('GoogleAuth.models',[])
-.factory('AuthenticationModel', function() {
-  var access = routingConfig.userRoles;
- 
-  var authenticationModel = {
-    isLoggedIn: false,
-	role: access.public,
-	isOwner:false,
-	id:'',
-    authenticationToken: {},
-	status:0
-  };
- 
-  return authenticationModel;
-});
-
-angular.module('GoogleAuth.services',['ngResource','ui.router','GoogleAuth.models'])
-.service('AuthenticationService', ['$http','$q', '$rootScope',/*'$log',*/function($http,$q, $rootScope/*,$log*/) {
-  var access = routingConfig.userRoles;
-  var authenticationToken = {};
-  var deferred = {}; // hackity hack hack
-  var me=this;
-  var newModel = function(){
-	var $injector = angular.injector(['ng','GoogleAuth.models' ]);
-	return $injector.get('AuthenticationModel');
-  };
-  
-  this.authorize = function(accessLevel, userRole) {
-			
-		if(userRole === undefined)
-			userRole = $rootScope.user.role;
-		//$log.debug('Check authorization for Access Level:'+accessLevel + ' with User Role:' + userRole);
-		var result= accessLevel & userRole;
-		//$log.debug(result?'Authorization accepted':'Authorization rejected');
-		return result;
-			
-	};
-		
-  this.login = function(initialLogin) {
-    //console.log("try login");
-    deferred = $q.defer();
-    doLogin(initialLogin).then(function(response){deferred.resolve(response)},function(err){/*console.log('Error while try to authenticate:'+err.message);*/deferred.reject(err);});
-    return deferred.promise;
-  };
- 
- this.logout = function(user){
-	var d=$q.defer();
-	//$log.log('Try to sign out');
-	//$log.log(user);
-
-	gapi.auth.signOut();
-	var revokeUrl='https://accounts.google.com/o/oauth2/revoke?token='+user.authenticationToken.access_token;
-	$.ajax({
-            type: 'GET',
-            url: revokeUrl,
-            async: false,
-            contentType: "application/json",
-            dataType: 'jsonp',
-            success: function(nullResponse) {
-              //$log.log('User sign out');
-              d.resolve({user:newModel()});
-            },
-            error: function(e) {
-              //$log.log('error in revoke');
-              //$log.log(e);
-			  d.reject(e);
             }
-          });
-	
-	
-	return d.promise;
- };
- 
-  var doLogin = function(mode) {
-    //$log.log("do login");
-    var d=$q.defer();
-	var handleLogin = function(authResult) {
-	   //console.log("handle login");
 
-		gapi.client.oauth2.userinfo.get().execute(function(response) {
-			////console.dir(response);
-			//$log.log('Auth resp code:'+response.code);
-		 
-			////console.log('token:'+authenticationToken.access_token);
-			  if (!response.code) {
-				//$log.log(authResult.status.signed_in);
-			 
-				authenticationToken = gapi.auth.getToken();
-				//$log.log('token:'+authenticationToken.access_token);
-				var model=newModel();
-				model.isLoggedIn = true;
-				model.isOwner=(response.id=='116763107480158322881')
-				model.authenticationToken = authenticationToken; 
-				model.role=access.user;
-				model.details=response;
-				model.id=response.id;
-				
-				if(ga!="undefined"){
-						//$log.log('set Google Analytics Id');
-						ga('set', '&uid', response.id); // Définir l'ID utilisateur à partir du paramètre user_id de l'utilisateur connecté.
-					}
-					////console.dir(me.model);
-					$rootScope.$apply(function() {
-					  d.resolve({user:model});
-					});
-					
-				
-			  }else{
-				d.reject({message:'unauthorized'});
-			  }
-		});
-	  };
-	
-    var opts = {
-      client_id: '474879262930-7smn8osaaaq97iob9v22mmflnt2tmvh3.apps.googleusercontent.com',
-	  apiKey: 'AIzaSyBav3gF1spxn-jyuUiZ_dDQ0n49lnRmByE',
-      scope: 'https://www.googleapis.com/auth/plus.login '/*'https://www.googleapis.com/auth/blogger.readonly https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly https://picasaweb.google.com/data/'*/,
-      immediate: mode,
-	  cookiepolicy:'single_host_origin' ,
-    };
-	
-    gapi.auth.authorize(opts, handleLogin);
-	return d.promise;
-  };
- 
-  
-  
-  
-}])
-.service('InitializationService', ['$q', '$rootScope'/*,'$log',*/,function($q, $rootScope/*,$log*/) {
- 
-  this.initialize = function() {
-    var deferred = $q.defer();
-    var apisToLoad = 5;
- 
-    var loginCallback = function() {
-      if (--apisToLoad === 0) {
-        $rootScope.$apply(function() {
-          //$log.log('finished loading up client libraries - should be resolving');
-          deferred.resolve();
-        });
-      }
-    };
- 
+        }
 
-    gapi.client.load('oauth2', 'v2', function(){/*$log.log('oauth v2 api loaded');*/loginCallback();});
-	gapi.client.load("plus", "v1", function() {/*$log.log('google plus v1 api loaded');*/loginCallback();});
-	gapi.client.load("calendar", "v3", function() {/*$log.log('google calendar v3 api loaded');*/loginCallback();});
-	gapi.client.load("youtube", "v3", function() {/*$log.log('youtube v3 api loaded');*/loginCallback();});
-	gapi.client.load("blogger","v3",function() {/*$log.log('blogger v3 api loaded');*/loginCallback();});
-    return deferred.promise;
-  };
-}])
+    }]);
 
-;
+angular.module('angular-google-gapi').factory('GData', ['$rootScope',
+        function ($rootScope) {
+
+        $rootScope.gapi = {};
+
+        var isLogin = false;
+        var user = null;
+
+        return {
+
+            isLogin : function(value) {
+                if(arguments.length == 0)
+                    return isLogin;
+                isLogin = value;
+                $rootScope.gapi.login = value;
+            },
+
+            getUser : function(value) {
+                if(arguments.length == 0)
+                    return user;
+                user = value;
+                $rootScope.gapi.user = value;
+            }
+
+        }
+
+    }]);
+
+
+angular.module('angular-google-gapi').factory('GAuth', ['$rootScope', '$q', 'GClient', 'GApi', 'GData', '$interval', '$window', '$location',
+    function($rootScope, $q, GClient, GApi, GData, $interval, $window){
+        var isLoad = false;
+
+        var CLIENT_ID;
+        var SCOPE = 'https://www.googleapis.com/auth/userinfo.email';
+        var RESPONSE_TYPE = 'token id_token';
+
+        function load(callback){
+             if (isLoad == false) {
+                 var args = arguments.length;
+                 GClient.get(function (){
+                    $window.gapi.client.load('oauth2', 'v2', function() {
+                         isLoad = true;
+                         if (args == 1)
+                             callback();
+                     });
+                 });
+             } else {
+                 callback();
+             }
+
+         }
+
+        function signin(mode, authorizeCallback) {
+            load(function (){
+                $window.gapi.auth.authorize({client_id: CLIENT_ID, scope: SCOPE, immediate: mode, response_type : RESPONSE_TYPE}, authorizeCallback);
+            });
+        }
+
+        function offline() {
+            var deferred = $q.defer();
+            var origin = $location.protocol + "//" + $location.hostname;
+            if($location.port != "") {
+                origin = origin + ':' + $location.port;
+            }
+            var win =  $window.open('https://accounts.google.com/o/oauth2/auth?scope='+encodeURI(SCOPE)+'&redirect_uri=postmessage&response_type=code&client_id='+CLIENT_ID+'&access_type=offline&approval_prompt=force&origin='+origin, null, 'width=800, height=600');
+
+            $window.addEventListener("message", getCode);
+
+            function getCode(event) {
+                if (event.origin === "https://accounts.google.com") {
+                    var data = JSON.parse(event.data);
+                    $window.removeEventListener("message", getCode);
+                    data = gup(data.a[0], 'code');
+                    if (data == undefined)
+                        deferred.reject();
+                    else
+                        deferred.resolve(data);
+
+                }
+            }
+
+            function gup(url, name) {
+                name = name.replace(/[[]/,"\[").replace(/[]]/,"\]");
+                var regexS = name+"=([^&#]*)";
+                var regex = new RegExp( regexS );
+                var results = regex.exec( url );
+                if( results == null )
+                    return undefined;
+                else
+                    return results[1];
+            }
+
+            return deferred.promise;
+        }
+
+        function getUser() {
+
+            var deferred = $q.defer();
+            $window.gapi.client.oauth2.userinfo.get().execute(function(resp) {
+                if (!resp.code) {
+                    GData.isLogin(true);
+                    GApi.executeCallbacks();
+                    var user = {};
+                    user.email = resp.email;
+                    user.picture = resp.picture;
+                    user.id = resp.id;
+                    if (resp.name == undefined)
+                        user.name = resp.email;
+                    else
+                        user.name = resp.name;
+                    user.link = resp.link;
+                    GData.getUser(user);
+                    deferred.resolve();
+                } else {
+                    deferred.reject();
+                }
+            });
+            return deferred.promise;
+        }
+
+        return {
+
+            setClient: function(client) {
+                CLIENT_ID = client;
+            },
+
+            setScope: function(scope) {
+                SCOPE = scope;
+            },
+
+            load: function(callback){
+                var args = arguments.length;
+                GClient.get(function (){
+                    $window.gapi.client.load('oauth2', 'v2', function() {
+                        if (args == 1)
+                            callback();
+                    });
+                });
+
+            },
+
+            checkAuth: function(){
+                var deferred = $q.defer();
+                signin(true, function() {
+                    getUser().then(function () {
+                        deferred.resolve();
+                    }, function () {
+                        deferred.reject();
+                    });
+                });
+                return deferred.promise;
+            },
+
+            login: function(){
+                var deferred = $q.defer();
+                signin(false, function() {
+                    getUser().then(function () {
+                        deferred.resolve();
+                    }, function () {
+                        deferred.reject();
+                    });
+                });
+                return deferred.promise;
+            },
+
+            setToken: function(token){
+                var deferred = $q.defer();
+                load(function (){
+                    $window.gapi.auth.setToken(token);
+                    getUser().then(function () {
+                        deferred.resolve();
+                    }, function () {
+                        deferred.reject();
+                    });
+                });
+                return deferred.promise;
+            },
+
+            getToken: function(){
+                var deferred = $q.defer();
+                load(function (){
+                    deferred.resolve($window.gapi.auth.getToken());
+                });
+                return deferred.promise;
+            },
+
+            logout: function(){
+                var deferred = $q.defer();
+                load(function() {
+                    $window.gapi.auth.setToken(null);
+                    GData.isLogin(false);
+                    GData.getUser(null);
+                    deferred.resolve();
+                });
+                return deferred.promise;
+            },
+
+            offline: function(){
+                var deferred = $q.defer();
+                offline().then( function(code){
+                        deferred.resolve(code);
+                    }, function(){
+                        deferred.reject();
+                    });
+                return deferred.promise;
+            },
+
+
+        }
+
+    }]);
+
+angular.module('angular-google-gapi').factory('GApi', ['$q', 'GClient', 'GData', '$window',
+    function($q, GClient, GData, $window){
+
+        var apisLoad  = [];
+
+        var observerCallbacks = [];
+
+        function registerObserverCallback(api, method, params, auth, deferred){
+            var observerCallback = {};
+            observerCallback.api = api;
+            observerCallback.apiLoad = false;
+            observerCallback.method = method;
+            observerCallback.params = params;
+            observerCallback.auth = auth;
+            observerCallback.deferred = deferred;
+            observerCallbacks.push(observerCallback);
+        };
+
+        function load(api, version, url) {
+            GClient.get(function (){
+                $window.gapi.client.load(api, version, function() {
+                    console.log(api+" "+version+" api loaded");
+                    apisLoad.push(api);
+                    executeCallbacks(api);
+                }, url)
+            });
+        }
+
+        function executeCallbacks(api){
+            var apiName = api;
+
+            for(var i= 0; i < observerCallbacks.length; i++){
+              var observerCallback = observerCallbacks[i];
+              if ((observerCallback.api == apiName || observerCallback.apiLoad) && (observerCallback.auth == false || GData.isLogin() == true)) {
+                  runGapi(observerCallback.api, observerCallback.method, observerCallback.params, observerCallback.deferred);
+                  if (i > -1) {
+                      observerCallbacks.splice(i--, 1);
+                  }
+              } else {
+                  if (observerCallback.api == apiName)
+                      observerCallbacks[i]['apiLoad'] = true;
+              }
+            };
+
+        }
+
+        function runGapi(api, method, params, deferred) {
+
+            var pathMethod = method.split('.');
+            var api = $window.gapi.client[api];
+            for(var i= 0; i < pathMethod.length; i++) {
+                api = api[pathMethod[i]];
+            }
+            api(params).execute(function (response) {
+                if (response.error) {
+                    deferred.reject(response);
+                } else {
+                    deferred.resolve(response);
+                }
+            });
+        }
+
+        function execute(api, method, params, auth) {
+            var deferred = $q.defer();
+            if (apisLoad.indexOf(api) > -1) {
+                runGapi(api, method, params, deferred);
+            }
+            else
+                registerObserverCallback(api, method, params, auth, deferred);
+            return deferred.promise;
+        }
+
+        return {
+
+            executeCallbacks : function() {
+                executeCallbacks();
+            },
+
+            load: function(name, version, url){
+                load(name, version, url);
+            },
+
+            execute: function(api, method, params){
+                if(arguments.length == 3)
+                    return execute(api, method, params, false);
+                if(arguments.length == 2)
+                    return execute(api, method, null, false);
+            },
+
+            executeAuth: function(api, method, params){
+                if(arguments.length == 3)
+                    return execute(api, method, params, true);
+                if(arguments.length == 2)
+                    return execute(api, method, null, true);
+            },
+        }
+    }]);

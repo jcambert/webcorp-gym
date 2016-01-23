@@ -11,7 +11,15 @@
     "lodash": "~4.0.0",
     "flip": "~1.0.19",
     "angular-ui-router": "~0.2.15",
-    "angular-resource": "~1.4.8"
+    "angular-resource": "~1.4.8",
+    "videogular": "~1.4.0",
+    "videogular-controls": "~1.4.0",
+    "videogular-overlay-play": "~1.4.0",
+    "videogular-poster": "~1.4.0",
+    "videogular-buffering": "~1.4.0",
+    "videogular-ima-ads": "~1.4.0",
+    "videogular-angulartics": "~1.4.0",
+    "videogular-themes-default": "~1.4.0"
   },
   "devDependencies": {
     "chai": "~3.4.2",
