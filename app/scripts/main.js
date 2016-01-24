@@ -1,3 +1,6 @@
+var CLIENT_KEY = '474879262930-7smn8osaaaq97iob9v22mmflnt2tmvh3.apps.googleusercontent.com';
+var API_KEY='AIzaSyBav3gF1spxn-jyuUiZ_dDQ0n49lnRmByE';
+var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
 !function (angular) {
 
    "use strict";
@@ -9,7 +12,8 @@
         "com.2fdevs.videogular.plugins.controls",
         "com.2fdevs.videogular.plugins.overlayplay",
         "com.2fdevs.videogular.plugins.poster",
-        'angular-google-gapi'
+        'angular.gapi',
+        'angular.youtube'
     ]);
     
     app.config(['$stateProvider','$urlRouterProvider',function($state,$route){
@@ -82,12 +86,13 @@
        ;
     }]);
 
-    app.run(['$rootScope','$state','GApi', 'GAuth',function($rootScope,$state,GApi, GAuth){
-         var CLIENT = '474879262930-7smn8osaaaq97iob9v22mmflnt2tmvh3.apps.googleusercontent.com';
-         GAuth.setClient(CLIENT);
+    app.run(['$rootScope','$state','GApi', 'GAuth','youtube.service',function($rootScope,$state,GApi, GAuth,youtube){
+         
+         GAuth.setClient(CLIENT_KEY);
          GApi.load('oauth2', 'v2');
-         GAuth.setScope("https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar.readonly");
-         GAuth.checkAuth().then(
+         GApi.load('youtube','v3');
+         GAuth.setScope("https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/calendar.readonly");
+        /* GAuth.checkAuth().then(
             function () {
                 console.log('user identified');
                 console.log($rootScope.gapi.user.picture);
@@ -98,7 +103,25 @@
                 $state.go('index');     
                             
                 }
-            );
+            );*/
+            
+            $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+            
+                if(toState.name=='video'){
+                    youtube.getPlaylists(CHANNEL_ID,API_KEY, {part:'snippet'}).then(
+                        function(playlists){
+                            $rootScope.playlists=playlists;
+                             console.dir($rootScope.playlists);
+                             //$rootScope.$apply();
+                        },
+                        function(){
+                            console.log('Playlist not retrieved');
+                        }
+                    );
+                   
+                }
+                
+            });
          console.log('running...');
          
     }]);
@@ -124,7 +147,11 @@
             });
         };
         
-        
+        $scope.doSignout = function(){
+            GAuth.logout().then(function(){
+               console.log('user is log out'); 
+            });
+        }
     }]);
     
     app.directive("page",[function(){
@@ -275,6 +302,53 @@
         
     }]);
     
+    app.directive('videoTiles',[function(){
+        return{
+            replace:true,
+            restrict:'E',
+            scope:{
+                playlists:'=playlists',
+                size:'@size'
+            },
+            template:'<video-tile ng-repeat="playlist in playlists" tile-size="wide" title="{{playlist.snippet.title}}" description="{{playlist.snippet.description}}" img="{{playlist.snippet.thumbnails.medium.url}}"></video-tile>',
+           
+        }
+    }]);
+    
+    
+    app.directive('videoTile',[function(){
+        return{
+            replace:true,
+            restrict:'E',
+            scope:{
+                title:'@title',
+                description:'@description',
+                img:'@img',
+                size:'@size'
+            },
+            //template:'<div><div  class="thumbnail tile"><h4>{{title}}</h4><h5>{{description}}</h5><img ng-src="{{img}}"</div></div>'
+            templateUrl:'partials/videotile.html'
+        }
+        
+    }]);
+    
+    app.directive('tileSize',[function(){
+        return{
+            replace:true,
+            restrict:'A',
+            link:function(scope,element,attr){
+                if(attr.tileSize=='wide'){
+                    element.addClass("col-xs-12 col-sm-4 col-md-6 col-lg-4");
+                    element.find('div').addClass("tile-wide");
+                }else  if(attr.tileSize=='medium'){
+                    element.addClass("col-xs-6 col-sm-2 col-md-3 col-lg-2");
+                    element.find('div').addClass("tile-medium");
+                }
+            }
+        }
+        
+    }]);
+    
     app.directive('wide',[function(){
         return{
             replace:true,
@@ -368,7 +442,7 @@
         });  
         
         app.controller('VideoCtrl',
-		["$sce", function ($sce) {
+		["$sce",'$rootScope', function ($sce,$rootScope) {
 			this.config = {
 				sources: [
 					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
@@ -379,8 +453,8 @@
 					{
 						src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
 						kind: "subtitles",
-						srclang: "en",
-						label: "English",
+						srclang: "fr",
+						label: "French",
 						default: ""
 					}
 				],

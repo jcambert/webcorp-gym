@@ -1,6 +1,11 @@
-angular.module('angular-google-gapi', [])
-
-angular.module('angular-google-gapi').factory('GClient', ['$document', '$q', '$timeout', '$interval', '$window',
+!function (angular) {
+"use strict";
+var gapi=angular.module('angular.gapi', []);
+gapi.run(function(){
+    console.log('gapi running');
+    
+});
+gapi.factory('GClient', ['$document', '$q', '$timeout', '$interval', '$window',
         function ($document, $q, $timeout, $interval, $window) {
 
         var LOAD_GAE_API = false;
@@ -54,7 +59,7 @@ angular.module('angular-google-gapi').factory('GClient', ['$document', '$q', '$t
 
     }]);
 
-angular.module('angular-google-gapi').factory('GData', ['$rootScope',
+gapi.factory('GData', ['$rootScope',
         function ($rootScope) {
 
         $rootScope.gapi = {};
@@ -83,7 +88,7 @@ angular.module('angular-google-gapi').factory('GData', ['$rootScope',
     }]);
 
 
-angular.module('angular-google-gapi').factory('GAuth', ['$rootScope', '$q', 'GClient', 'GApi', 'GData', '$interval', '$window', '$location',
+gapi.factory('GAuth', ['$rootScope', '$q', 'GClient', 'GApi', 'GData', '$interval', '$window', '$location',
     function($rootScope, $q, GClient, GApi, GData, $interval, $window){
         var isLoad = false;
 
@@ -267,7 +272,7 @@ angular.module('angular-google-gapi').factory('GAuth', ['$rootScope', '$q', 'GCl
 
     }]);
 
-angular.module('angular-google-gapi').factory('GApi', ['$q', 'GClient', 'GData', '$window',
+gapi.factory('GApi', ['$q', 'GClient', 'GData', '$window',
     function($q, GClient, GData, $window){
 
         var apisLoad  = [];
@@ -364,3 +369,5 @@ angular.module('angular-google-gapi').factory('GApi', ['$q', 'GClient', 'GData',
             },
         }
     }]);
+    
+}(angular);

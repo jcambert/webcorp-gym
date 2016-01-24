@@ -45,7 +45,6 @@
                         <span class="icon-bar"></span>
                     </button>
                     
-                    <!-- <a class="navbar-brand pull-left logo" href="index.html"><img  src="assets/images/logo0.png" alt="logo"></a>-->
                     <logo image="assets/images/logo0.png" view="index"></logo>
                     <login class="pull-left"></login>
                     <user class="pull-left"></user>
@@ -55,19 +54,7 @@
                 <div class="collapse navbar-collapse navbar-right">
                     <socials class="pull-right"></socials>
                 </div>
-           <!-- <div class="collapse navbar-collapse navbar-right">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a ui-sref="index">Accueil</a></li>
-                    <li><a ui-sref="qui">Nous</a></li>
-                    <li><a ui-sref="rejoindre">Rejoindre</a></li>
-                    <li><a ui-sref="action">Actions</a></li>
-                    <li><a ui-sref="actu">Actualit&eacute;s</a></li>
-                    <li><a ui-sref="agenda">Agenda</a></li>
-                    <li><a ui-sref="video">Vid&eacute;os</a></li>
-                    <li><a ui-sref="photo">Photos</a></li>
-                    <li><a ui-sref="lien">Liens</a></li>
-                </ul>
-            </div>-->
+
         </div> 
     </nav> 
 </header> 
@@ -81,36 +68,6 @@
             </div>
       </div>
 
-    <!--<div class="container" ng-controller="MainCtrl">
-        <div class="row">
-            <div class="col-md-1">
-                <flipper flipped="flipped" horizontal>
-                    <front>
-                        <tile wide color="turquoise">
-                            <a href="#" >
-                                <h2>Liens</h2>
-                                <i class="fa fa-3x fa-external-link"></i>
-                            </a>
-                        </tile>
-                    </front>
-                    <back>
-                        <tile wide color="turquoise">
-                            <a href="#" >
-                                <h2>Cliquer pour suivre</h2>
-                                <i class="fa fa-3x fa-external-link"></i>
-                            </a>
-                        </tile>
-                    </back>
-                </flipper>
-                
-            </div>
-            <div class="col-lg-1">
-                <div class="button-container">
-                    <button ng-click="flip()">Flip!</button>
-                </div>
-            </div>
-        </div>
-    </div>-->
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -164,9 +121,10 @@
     <script src="bower_components/videogular-overlay-play/vg-overlay-play.js"></script>
     <script src="bower_components/videogular-poster/vg-poster.js"></script>
     <script src="bower_components/videogular-buffering/vg-buffering.js"></script>
-    
+     <!-- endbuild -->
     
     <!-- build:js scripts/main.js -->
+        <script src="scripts/youtube.js"></script>
         <script src="scripts/auth.js"></script>
         <script src="scripts/main.js"></script>
     <!-- endbuild -->
