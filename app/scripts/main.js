@@ -110,7 +110,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
          // if you don't wish to set base URL then use this
          $locationProvider.html5Mode({
                  enabled: true,
-                 requireBase: true
+                 requireBase: false
           });
         }
     }]);
