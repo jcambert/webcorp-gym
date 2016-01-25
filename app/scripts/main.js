@@ -70,14 +70,16 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
            }
        })
        
-       .state("video.playlist",{
+       .state("video.playlists",{
            url:"/playlists",
-           templateUrl:'/partials/video.playlist.html',
+           templateUrl:'/partials/video.playlists.html',
        })
        
-       .state("video.choose",{
-           url:"/choose",
-           templateUrl:'/partials/video.choose.html'
+       .state("video.playlist",{
+           url:"/playlist/:playlistid",
+           templateUrl:'/partials/video.playlist.html',
+           controller:'VideoPlaylistCtrl' 
+           
        })
        
        .state("video.play",{
@@ -136,7 +138,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
             
             $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
             
-                if(toState.name=='video.playlist'){
+                if(toState.name=='video.playlists'){
                     youtube.getPlaylists(CHANNEL_ID,API_KEY, {part:'snippet'}).then(
                         function(playlists){
                             $rootScope.playlists=playlists;
@@ -148,6 +150,9 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                         }
                     );
                    
+                }else if(toState.name=='video.playlist'){
+                    console.dir(toState);
+                    //youtube.getPlaylistItems();
                 }
                 
             });
@@ -339,7 +344,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                 playlists:'=playlists',
                 size:'@size'
             },
-            template:'<video-tile ng-repeat="playlist in playlists" tile-size="wide" title="{{playlist.snippet.title}}" description="{{playlist.snippet.description}}" img="{{playlist.snippet.thumbnails.medium.url}}"></video-tile>',
+            template:'<video-tile ng-repeat="playlist in playlists" tile-size="wide" title="{{playlist.snippet.title}}" description="{{playlist.snippet.description}}" img="{{playlist.snippet.thumbnails.medium.url}}" playlistid="{{playlist.id}}"></video-tile>',
            
         }
     }]);
@@ -353,7 +358,8 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                 title:'@title',
                 description:'@description',
                 img:'@img',
-                size:'@size'
+                size:'@size',
+                playlistid:'@playlistid'
             },
             //template:'<div><div  class="thumbnail tile"><h4>{{title}}</h4><h5>{{description}}</h5><img ng-src="{{img}}"</div></div>'
             templateUrl:'/partials/videotile.html'
@@ -423,7 +429,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
             {size:'medium',color:'magenta',state:'action',title:'Actions',icon:'trophy'},
             {size:'wide',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
             {size:'wide',color:'wisteria',state:'agenda',title:'Agenda',icon:'calendar'},
-            {size:'wide',color:'magenta',state:'video.playlist',title:'Vidéos',icon:'youtube'},
+            {size:'wide',color:'magenta',state:'video.playlists',title:'Vidéos',icon:'youtube'},
             {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
             {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
             ];
@@ -494,4 +500,12 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
 			};
 		}]
 	);
+    
+    app.controller('VideoPlaylistCtrl',['$scope','$stateParams','youtube.service',function($scope,$stateParams,youtube){
+      // console.dir($stateParams);
+        var playlistid=$stateParams.playlistid;
+        youtube.getPlaylistItems(playlistid,API_KEY, {part:'snippet'},function(videos){
+           $scope.playlistitems=videos; 
+        });
+    }]);
 }(angular,_);
