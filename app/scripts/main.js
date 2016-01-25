@@ -16,7 +16,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         'angular.youtube'
     ]);
     
-    app.config(['$stateProvider','$urlRouterProvider','$httpProvider',function($state,$route,$httpProvider){
+    app.config(['$stateProvider','$urlRouterProvider','$locationProvider',function($state,$route,$locationProvider){
        $route.otherwise("/");
        
        $state
@@ -30,69 +30,89 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
        .state("qui",{
            url:"/qui",
            views:{
-               "front":{templateUrl:'partials/index.html'},
+               "front":{template:'' },
                "back":{templateUrl:'partials/qui.html'}
            }
        })
         .state("rejoindre",{
            url:"/rejoindre",
            views:{
-               "front":{templateUrl:'partials/index.html'},
+               "front":{template:'' },
                "back":{templateUrl:'partials/rejoindre.html'}
            }
        })
         .state("action",{
            url:"/action",
            views:{
-               "front":{templateUrl:'partials/index.html'},
+               "front":{template:'' },
                "back":{templateUrl:'partials/action.html'}
            }
        })
         .state("actu",{
            url:"/actu",
            views:{
-               "front":{templateUrl:'partials/index.html'},
+               "front":{template:'' },
                "back":{templateUrl:'partials/actu.html'}
            }
        })
         .state("agenda",{
            url:"/agenda",
            views:{
-               "front":{templateUrl:'partials/index.html'},
+               "front":{template:'' },
                "back":{templateUrl:'partials/agenda.html'}
            }
        })
         .state("video",{
            url:"/video",
            views:{
-               "front":{templateUrl:'partials/index.html'},
-               "back":{templateUrl:'partials/video.html'}
+               "front":{template:'' },
+               "back":{templateUrl:'/partials/video.html'}
            }
        })
+       
+       .state("video.playlist",{
+           url:"/playlists",
+           templateUrl:'/partials/video.playlist.html',
+       })
+       
+       .state("video.choose",{
+           url:"/choose",
+           templateUrl:'/partials/video.choose.html'
+       })
+       
+       .state("video.play",{
+           url:'/play/:id',
+           templateUrl:'/partials/video.play.html'
+       })
+       
         .state("photo",{
            url:"/photo",
            views:{
-               "front":{templateUrl:'partials/index.html'},
+               "front":{template:'' },
                "back":{templateUrl:'partials/photo.html'}
            }
        })
         .state("lien",{
            url:"/lien",
            views:{
-               "front":{templateUrl:'partials/index.html'},
+               "front":{template:'' },
                "back":{templateUrl:'partials/lien.html'}
            }
        })
        ;
        
-     /*  $httpProvider.interceptors.push(function ($location) {
-            return {
-                request: function (config) {
-                    config.headers["Referer"] = "jcambert.ddns.net";
-                    return config;
-                }
-            };
-        });*/
+       //check browser support
+        if(window.history && window.history.pushState){
+            //$locationProvider.html5Mode(true); will cause an error $location in HTML5 mode requires a  tag to be present! Unless you set baseUrl tag after head tag like so: <head> <base href="/">
+
+         // to know more about setting base URL visit: https://docs.angularjs.org/error/$location/nobase
+
+         // if you don't wish to set base URL then use this
+         $locationProvider.html5Mode({
+                 enabled: true,
+                 requireBase: true
+          });
+        }
     }]);
 
     app.run(['$rootScope','$state','GApi', 'GAuth','youtube.service',function($rootScope,$state,GApi, GAuth,youtube){
@@ -116,7 +136,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
             
             $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
             
-                if(toState.name=='video'){
+                if(toState.name=='video.playlist'){
                     youtube.getPlaylists(CHANNEL_ID,API_KEY, {part:'snippet'}).then(
                         function(playlists){
                             $rootScope.playlists=playlists;
@@ -336,7 +356,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                 size:'@size'
             },
             //template:'<div><div  class="thumbnail tile"><h4>{{title}}</h4><h5>{{description}}</h5><img ng-src="{{img}}"</div></div>'
-            templateUrl:'partials/videotile.html'
+            templateUrl:'/partials/videotile.html'
         }
         
     }]);
@@ -403,7 +423,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
             {size:'medium',color:'magenta',state:'action',title:'Actions',icon:'trophy'},
             {size:'wide',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
             {size:'wide',color:'wisteria',state:'agenda',title:'Agenda',icon:'calendar'},
-            {size:'wide',color:'magenta',state:'video',title:'Vidéos',icon:'youtube'},
+            {size:'wide',color:'magenta',state:'video.playlist',title:'Vidéos',icon:'youtube'},
             {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
             {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
             ];
