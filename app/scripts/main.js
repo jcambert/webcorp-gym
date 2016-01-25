@@ -16,7 +16,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         'angular.youtube'
     ]);
     
-    app.config(['$stateProvider','$urlRouterProvider',function($state,$route){
+    app.config(['$stateProvider','$urlRouterProvider','$httpProvider',function($state,$route,$httpProvider){
        $route.otherwise("/");
        
        $state
@@ -84,6 +84,15 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
            }
        })
        ;
+       
+     /*  $httpProvider.interceptors.push(function ($location) {
+            return {
+                request: function (config) {
+                    config.headers["Referer"] = "jcambert.ddns.net";
+                    return config;
+                }
+            };
+        });*/
     }]);
 
     app.run(['$rootScope','$state','GApi', 'GAuth','youtube.service',function($rootScope,$state,GApi, GAuth,youtube){

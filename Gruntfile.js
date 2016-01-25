@@ -49,8 +49,19 @@ module.exports = function (grunt) {
       options: {
         port: 9000,
         // change this to '0.0.0.0' to access the server from outside
-        hostname: '0.0.0.0',
-        livereload: 35729
+        hostname: '12.0.0.1',
+        livereload: 35729,
+       /* middleware: function(connect, options, next) {
+          return [
+            function(req, res, next) {
+              res.setHeader('Access-Control-Allow-Origin', '*');
+              res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+              res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+              res.setHeader('Origin', 'http://jcambert.ddns.net');
+              next();
+            }
+          ];
+        }*/
       },
       livereload: {
         options: {
