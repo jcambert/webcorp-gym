@@ -336,7 +336,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         
     }]);
     
-    app.directive('videoTiles',[function(){
+    app.directive('videoPlaylists',[function(){
         return{
             replace:true,
             restrict:'E',
@@ -344,13 +344,13 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                 playlists:'=playlists',
                 size:'@size'
             },
-            template:'<video-tile ng-repeat="playlist in playlists" tile-size="wide" title="{{playlist.snippet.title}}" description="{{playlist.snippet.description}}" img="{{playlist.snippet.thumbnails.medium.url}}" playlistid="{{playlist.id}}"></video-tile>',
+            template:'<video-playlist ng-repeat="playlist in playlists" tile-size="wide" title="{{playlist.snippet.title}}" description="{{playlist.snippet.description}}" img="{{playlist.snippet.thumbnails.medium.url}}" playlistid="{{playlist.id}}"></video-playlist>',
            
         }
     }]);
     
     
-    app.directive('videoTile',[function(){
+    app.directive('videoPlaylist',[function(){
         return{
             replace:true,
             restrict:'E',
@@ -362,9 +362,34 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                 playlistid:'@playlistid'
             },
             //template:'<div><div  class="thumbnail tile"><h4>{{title}}</h4><h5>{{description}}</h5><img ng-src="{{img}}"</div></div>'
-            templateUrl:'/partials/videotile.html'
+            templateUrl:'/partials/video.playlist.tile.html'
         }
         
+    }]);
+    
+    app.directive('videoPlaylistItems',[function(){
+        return{
+            replace:true,
+            restrict:'E',
+            scope:{
+                playlistitems:'=playlistitems',
+                size:'@size'
+            },
+            template:'<div>Items:<div ng-repeat="item in playlistitems.items"><video-playlist-item videoid="{{item.snippet.resourceId.videoId}}" title="{{item.snippet.title}}" description="{{item.snippet.description}}" img="{{item.snippet.thumbnails.medium.url}}"/></div></div>'
+            
+        }
+    }]);
+    
+    app.directive('videoPlaylistItem',[function(){
+        return{
+            replace:true,
+            restrict:'E',
+            scope:{
+                videoid:'@videoid',
+                title:'@title'
+            },
+            template:'<div>{{videoid}}</div>'
+        }
     }]);
     
     app.directive('tileSize',[function(){
@@ -502,10 +527,12 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
 	);
     
     app.controller('VideoPlaylistCtrl',['$scope','$stateParams','youtube.service',function($scope,$stateParams,youtube){
-      // console.dir($stateParams);
+       console.dir($stateParams);
         var playlistid=$stateParams.playlistid;
-        youtube.getPlaylistItems(playlistid,API_KEY, {part:'snippet'},function(videos){
+        youtube.getPlaylistItems(playlistid,API_KEY, {part:'snippet'}).then(function(videos){
            $scope.playlistitems=videos; 
+           console.log('items');
+           console.dir($scope.playlistitems);
         });
     }]);
 }(angular,_);
