@@ -8678,6 +8678,13 @@ a.fa-links:focus {
     display: none;
   }
 }
+body {
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -ms-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
+}
 [deferred-cloak],
 [data-deferred-cloak],
 [x-deferred-cloak],
@@ -8828,9 +8835,15 @@ flipper[vertical] div.flipped .back {
 /* END FLIPPER */
 /* VIDEO Playlist THUMBNAIL */
 .video-playlist-tile {
+  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  -ms-transition: all 0.5s ease-out;
+  -o-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
   opacity: 0.75;
   cursor: pointer;
   border: 4px #A3B6B1 solid;
+  word-wrap: break-word;
 }
 .video-playlist-tile .video-tile-thumbnail {
   height: 150px;

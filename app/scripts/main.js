@@ -169,6 +169,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         };
         
          $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+            if( fromState.name=='video.playlists'&& toState.name=="video.playlist"  )return;
             $scope.flip(); 
         });
         
