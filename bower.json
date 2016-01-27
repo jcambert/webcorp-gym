@@ -19,7 +19,8 @@
     "videogular-buffering": "~1.4.0",
     "videogular-ima-ads": "~1.4.0",
     "videogular-angulartics": "~1.4.0",
-    "videogular-themes-default": "~1.4.0"
+    "videogular-themes-default": "~1.4.0",
+    "bower-videogular-youtube": "videogular-youtube#~2.0.5"
   },
   "devDependencies": {
     "chai": "~3.4.2",
