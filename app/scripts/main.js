@@ -78,13 +78,15 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
        .state("video.playlist",{
            url:"/playlist/:playlistid",
            templateUrl:'/partials/video.playlist.html',
-           controller:'VideoPlaylistCtrl' 
+           controller:'VideoPlaylistCtrl',
+           controllerAs:'controller'
            
        })
        
        .state("video.play",{
            url:'/play/:videoid',
-           templateUrl:'/partials/video.play.html'
+           templateUrl:'/partials/video.play.html',
+           controller:'VideoPlayerCtrl'
        })
        
         .state("photo",{
@@ -99,6 +101,13 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
            views:{
                "front":{template:'' },
                "back":{templateUrl:'partials/lien.html'}
+           }
+       })
+       .state("temp",{
+           url:"/temp",
+           views:{
+               "front":{template:'' },
+               "back":{templateUrl:'/partials/temp.html'}
            }
        })
        ;
@@ -461,6 +470,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
             {size:'wide',color:'magenta',state:'video.playlists',title:'Vidéos',icon:'youtube'},
             {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
             {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
+            {size:'wide',color:'magenta',state:'temp',title:'Vidéos',icon:'youtube'},
             ];
         
         
@@ -507,11 +517,24 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         
         app.controller('VideoCtrl',
 		["$sce",'$rootScope', function ($sce,$rootScope) {
-			this.config = {
+			
+		}]
+	);
+    
+    app.controller('VideoPlaylistCtrl',['$scope','$stateParams','youtube.service',function($scope,$stateParams,youtube){
+       console.dir($stateParams);
+        var playlistid=$stateParams.playlistid;
+        youtube.getPlaylistItems(playlistid,API_KEY, {part:'snippet'}).then(function(videos){
+           $scope.playlistitems=videos; 
+           console.log('items');
+           console.dir($scope.playlistitems);
+        });
+    }]);
+    
+    app.controller('VideoPlayerCtrl',['$scope','$stateParams','$sce',function($scope,$stateParams,$sce){
+        this.config = {
 				sources: [
-					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
-					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/webm"},
-					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/ogg"}
+					{src: $sce.trustAsResourceUrl($stateParams.videoid), type: "video/mp4"},
 				],
 				tracks: [
 					{
@@ -527,16 +550,5 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
 					poster: "http://www.videogular.com/assets/images/videogular.png"
 				}
 			};
-		}]
-	);
-    
-    app.controller('VideoPlaylistCtrl',['$scope','$stateParams','youtube.service',function($scope,$stateParams,youtube){
-       console.dir($stateParams);
-        var playlistid=$stateParams.playlistid;
-        youtube.getPlaylistItems(playlistid,API_KEY, {part:'snippet'}).then(function(videos){
-           $scope.playlistitems=videos; 
-           console.log('items');
-           console.dir($scope.playlistitems);
-        });
-    }]);
+    }])
 }(angular,_);

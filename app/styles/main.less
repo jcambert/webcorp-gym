@@ -121,10 +121,13 @@ flipper { /*float:left;width:250px; height:250px; margin-right:15px; display:blo
         height: @tile-height;
         background-color: @navbar-inverse-bg;
         div{
+            
             display: inline-block;
             vertical-align: top; 
         }
         .video-tile-img {
+            .hidden-xs;
+            .hidden-sm;
             width:33%;
             height: @tile-height;
             img{
@@ -134,18 +137,60 @@ flipper { /*float:left;width:250px; height:250px; margin-right:15px; display:blo
             
         }
         .video-tile-description{
-            width:66%;
+            width:100%;
            h3{
+               margin-top: 0px;
                color:white;
                font-weight: 100;
                line-height: 1.1;
+               
            }
            h4{
+               margin-top: 0px;
                color:white;
                font-weight: 80;
                line-height: 1.1;
            }
+           /* Small devices (tablets, 768px and up) */
+            @media (min-width: @screen-sm-min) { 
+              
+                h3{
+                    font-size:20px;
+                }
+                h4{
+                    font-size: 15px;
+                    margin-top: 0px;
+                    margin-bottom: 0px;
+                }
+            }
+            
+            /* Medium devices (desktops, 992px and up) */
+            @media (min-width: @screen-md-min) {
+                width:66%;
+                h3{
+                font-size:18px;
+                }
+                h4{
+                    font-size: 16px;
+                    margin-top: 0px;
+                    margin-bottom: 0px;
+                }
+            }
+            @media (min-width: @screen-lg-min) {
+                width:66%;
+                 h3{
+                    font-size:20px;
+                    }
+                h4{
+                    font-size: 18px;
+                    margin-top: 0px;
+                    margin-bottom: 0px;
+                }
+            }
         }
+        
+        
+        
     }
     
     .video-tile-thumbnail:hover {

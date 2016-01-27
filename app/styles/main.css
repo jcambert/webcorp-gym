@@ -8857,22 +8857,72 @@ flipper[vertical] div.flipped .back {
   width: 33%;
   height: 150px;
 }
+@media (max-width: 767px) {
+  .video-playlist-tile .video-tile-thumbnail .video-tile-img {
+    display: none !important;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .video-playlist-tile .video-tile-thumbnail .video-tile-img {
+    display: none !important;
+  }
+}
 .video-playlist-tile .video-tile-thumbnail .video-tile-img img {
   width: 100%;
   height: 150px;
 }
 .video-playlist-tile .video-tile-thumbnail .video-tile-description {
-  width: 66%;
+  width: 100%;
+  /* Small devices (tablets, 768px and up) */
+  /* Medium devices (desktops, 992px and up) */
 }
 .video-playlist-tile .video-tile-thumbnail .video-tile-description h3 {
+  margin-top: 0px;
   color: white;
   font-weight: 100;
   line-height: 1.1;
 }
 .video-playlist-tile .video-tile-thumbnail .video-tile-description h4 {
+  margin-top: 0px;
   color: white;
   font-weight: 80;
   line-height: 1.1;
+}
+@media (min-width: 768px) {
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description h3 {
+    font-size: 20px;
+  }
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description h4 {
+    font-size: 15px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+@media (min-width: 992px) {
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description {
+    width: 66%;
+  }
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description h3 {
+    font-size: 18px;
+  }
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description h4 {
+    font-size: 16px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+@media (min-width: 1200px) {
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description {
+    width: 66%;
+  }
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description h3 {
+    font-size: 20px;
+  }
+  .video-playlist-tile .video-tile-thumbnail .video-tile-description h4 {
+    font-size: 18px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
 }
 .video-playlist-tile .video-tile-thumbnail:hover {
   color: #fff;
