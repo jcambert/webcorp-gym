@@ -212,6 +212,24 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         }
     }]);
     
+    app.directive("pageHead",[function(){
+        return{
+            replace:true,
+            restrict:'E',
+            require:'^page',
+            template:''
+        }
+    }]);
+    
+    app.directive("pageContent",[function(){
+        return{
+            replace:true,
+            restrict:'E',
+            require:'^page',
+            template:''
+        }
+    }]);
+    
     app.directive("deferredCloak", [function () {
         return {
             restrict: 'A',
