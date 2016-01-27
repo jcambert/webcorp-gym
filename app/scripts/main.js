@@ -83,7 +83,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
        })
        
        .state("video.play",{
-           url:'/play/:id',
+           url:'/play/:videoid',
            templateUrl:'/partials/video.play.html'
        })
        
@@ -386,9 +386,12 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
             restrict:'E',
             scope:{
                 videoid:'@videoid',
-                title:'@title'
+                title:'@title',
+                description:'@description',
+                img:'@img'
             },
-            template:'<div>{{videoid}}</div>'
+            templateUrl:'/partials/video.playlistitem.tile.html'
+           // template:'<div>{{videoid}}</div>'
         }
     }]);
     
