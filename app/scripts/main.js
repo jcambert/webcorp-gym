@@ -495,7 +495,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         
         
     }]);
-    app.directive("flipper", function($rootScope, $timeout) {
+    app.directive("flipper", ['$rootScope','$timeout',function($rootScope, $timeout) {
             return {
                 restrict: "E",
                 template: '<div class="flipper " ng-transclude ng-class="{ flipped: flipped }"></div>',
@@ -504,7 +504,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                     flipped: "="
                 }
             };
-        });
+        }]);
         
         app.directive("front",['$compile', function($compile) {
             return {
