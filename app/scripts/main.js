@@ -521,7 +521,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
             };
         }]);
         
-        app.directive("back", function() {
+        app.directive("back", [function() {
             return {
                 restrict: "E",
                 scope:{
@@ -533,7 +533,7 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                     scope.view=attrs['view'];
                 }
             }
-        });  
+        }]);  
         
         app.controller('VideoCtrl',
 		["$sce",'$rootScope', function ($sce,$rootScope) {
@@ -571,4 +571,4 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
 				}
 			};
     }])
-}(angular,_);
+}(angular);
