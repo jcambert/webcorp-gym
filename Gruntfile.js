@@ -223,8 +223,8 @@ module.exports = function (grunt) {
           useShortDoctype: true,
           removeEmptyAttributes: true,
           removeOptionalTags: true*/
-          removeComments: true,
-          collapseWhitespace: true
+          //removeComments: true,
+          //collapseWhitespace: true
         },
         files: [{
           expand: true,
