@@ -223,11 +223,13 @@ module.exports = function (grunt) {
           useShortDoctype: true,
           removeEmptyAttributes: true,
           removeOptionalTags: true*/
+          removeComments: true,
+          collapseWhitespace: true
         },
         files: [{
           expand: true,
           cwd: '<%= yeoman.app %>',
-          src: '*.html',
+          src: ['*.html','partials/**/*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -243,7 +245,8 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             'fonts/{,*/}*.*',
             '.htaccess',
-            'images/{,*/}*.{webp,gif}'
+            'images/{,*/}*.{webp,gif}',
+            'assets/{,*/}*.{png,gif}'
           ]
         }]
       },
