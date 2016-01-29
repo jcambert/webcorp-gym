@@ -1,6 +1,8 @@
 var CLIENT_KEY = '474879262930-7smn8osaaaq97iob9v22mmflnt2tmvh3.apps.googleusercontent.com';
 var API_KEY='AIzaSyBav3gF1spxn-jyuUiZ_dDQ0n49lnRmByE';
 var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
+var BLOG_ID='6187643531186496547';
+var QUI_ID='3446268919979638524';
 !function (angular) {
 
    "use strict";
@@ -12,9 +14,10 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
         "com.2fdevs.videogular.plugins.controls",
         "com.2fdevs.videogular.plugins.overlayplay",
         "com.2fdevs.videogular.plugins.poster",
-         "info.vietnamcode.nampnq.videogular.plugins.youtube",
+        "info.vietnamcode.nampnq.videogular.plugins.youtube",
         "angular.gapi",
-        "angular.youtube"
+        "angular.youtube",
+        "angular.blogger"
     ]);
     
     app.config(['$stateProvider','$urlRouterProvider','$locationProvider',function($state,$route,$locationProvider){
@@ -32,7 +35,10 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
            url:"/qui",
            views:{
                "front":{template:'' },
-               "back":{templateUrl:'partials/qui.html'}
+               "back":{
+                   templateUrl:'partials/qui.html',
+                   controller:'QuiCtrl'
+                }
            }
        })
         .state("rejoindre",{
@@ -198,6 +204,14 @@ var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
                console.log('user is log out'); 
             });
         }
+    }]);
+    
+    app.controller('QuiCtrl',['$scope','blogger.service',function($scope,$blogger){
+        $blogger.getPost(BLOG_ID,QUI_ID,API_KEY).then(function(post){
+            $scope.post=post.content;
+            
+        });
+        
     }]);
     
     app.directive("page",[function(){

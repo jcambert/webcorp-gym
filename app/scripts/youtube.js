@@ -60,7 +60,7 @@
                     });
             }else{
                 playlistItems.get({snippet:options.part ||'snippet',playlistId:playlist,key:key},function(p){
-                    console.dir(p);
+                   //console.dir(p);
                     d.resolve(p); 
                 });
                
@@ -70,5 +70,23 @@
             return d.promise;
        }
    }]);
+  
    
+   var blogger=angular.module('angular.blogger',[]);
+    blogger.factory('post',['$resource',function($resource){
+    return $resource('https://www.googleapis.com/blogger/v3/blogs/:blogid/posts/:postid?key=:key');
+       
+   }]);
+   
+   blogger.service('blogger.service',['$q','post',function($q,$post){
+       
+       this.getPost = function(blogId,postId,key){
+           var d=$q.defer();
+           $post.get({blogid:blogId,postid:postId,key:key},function(p){
+               d.resolve(p);
+           })
+           return d.promise;
+       }
+       
+   }]);
 }(angular,gapi);
