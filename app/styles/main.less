@@ -21,6 +21,7 @@
 @btn-color:#fff;
 @tile-width:100%;
 @tile-height:150px;
+@article-background-color:#FFB519;
 
 body{
     .transition(all 1s);
@@ -28,6 +29,27 @@ body{
 [deferred-cloak], [data-deferred-cloak], [x-deferred-cloak], .deferred-cloak {
     display: none;
 }
+
+
+/* article */
+article {
+    background-color: @menu-text-color; 
+    border-width: 5px;
+    border-color: @navbar-inverse-bg;
+    border-radius: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    h1,h2,h3,h4,h5,h6{
+        color:@article-background-color;
+    }
+    span{
+        font-size: 15px;
+    }
+    
+}
+/* End Article */
 
 /* VIDEO */
 .videogular-container {

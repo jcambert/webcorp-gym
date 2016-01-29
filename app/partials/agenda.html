@@ -1,1 +1,9 @@
-<page title="Agenda"/>
+
+
+<page title="Agenda">
+    <article ng-repeat="event in events">
+        <h3>{{event.summary}}</h3>
+        <h2> Le {{event.start.dateTime | moment:'LL'}} de {{event.start.dateTime | moment:'H:mm'}} a {{event.end.dateTime | moment:'H:mm'}} </h2>
+        <span ng-bind="event.description"/>
+    </article>
+</page>

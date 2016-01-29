@@ -72,21 +72,50 @@
    }]);
   
    
+   
+   
    var blogger=angular.module('angular.blogger',[]);
     blogger.factory('post',['$resource',function($resource){
-    return $resource('https://www.googleapis.com/blogger/v3/blogs/:blogid/posts/:postid?key=:key');
-       
-   }]);
+        return $resource('https://www.googleapis.com/blogger/v3/blogs/:blogid/posts/:postid?key=:key');   
+    }]);
+    blogger.factory('posts',['$resource',function($resource){
+        return $resource('https://www.googleapis.com/blogger/v3/blogs/:blogid/posts?maxResults=:maxresults&orderBy=published&key=:key');   
+    }]);
    
-   blogger.service('blogger.service',['$q','post',function($q,$post){
+   
+   blogger.service('blogger.service',['$q','post','posts',function($q,$post,$posts){
        
        this.getPost = function(blogId,postId,key){
            var d=$q.defer();
            $post.get({blogid:blogId,postid:postId,key:key},function(p){
                d.resolve(p);
-           })
+           });
            return d.promise;
-       }
+       };
+       
+       this.getPosts = function(blogId,maxResults,key){
+         var d=$q.defer();
+         $posts.get({blogid:blogId,maxresults:maxResults,key:key},function(p){
+             d.resolve(p.items);
+         });
+         return d.promise;
+       };
        
    }]);
+   
+   var calendar=angular.module('angular.calendar',[]);
+   calendar.factory('events',['$resource',function($resource){
+        return $resource('https://www.googleapis.com/calendar/v3/calendars/:calendarid/events?timeMin=:timemin&maxResults=:maxresults&fields=description%2Citems&key=:key');   
+    }]);
+    
+    calendar.service('calendar.service',['$q','events',function($q,$events){
+       this.getEvents = function(calendarId,maxResults,timeMin,key){
+            var d=$q.defer();
+            $events.get({calendarid:calendarId,maxresults:maxResults,timemin:timeMin,key:key},function(p){
+               d.resolve(p.items); 
+            });
+            return d.promise;
+       };
+    }]);
+   
 }(angular,gapi);

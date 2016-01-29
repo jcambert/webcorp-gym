@@ -5,7 +5,11 @@ var BLOG_ID='6187643531186496547';
 var QUI_ID='3446268919979638524';
 var REJOINDRE_ID='4204893462561567543';
 var ACTION_ID='5730449397571324216';
-!function (angular) {
+var ACTU_MAXRESULTS=10;
+var CALENDAR_ID='gym.grandvillars@gmail.com';
+var CALENDAR_MAXRESULTS=10;
+
+!function (angular,moment) {
 
    "use strict";
     var app = angular.module('gymapp', [ 
@@ -19,7 +23,8 @@ var ACTION_ID='5730449397571324216';
         "info.vietnamcode.nampnq.videogular.plugins.youtube",
         "angular.gapi",
         "angular.youtube",
-        "angular.blogger"
+        "angular.blogger",
+        "angular.calendar"
     ]);
     
     app.config(['$stateProvider','$urlRouterProvider','$locationProvider',function($state,$route,$locationProvider){
@@ -73,14 +78,20 @@ var ACTION_ID='5730449397571324216';
            url:"/actu",
            views:{
                "front":{template:'' },
-               "back":{templateUrl:'partials/actu.html'}
+               "back":{
+                   templateUrl:'partials/actu.html',
+                   controller:'PostsCtrl'
+                   }
            }
        })
         .state("agenda",{
            url:"/agenda",
            views:{
                "front":{template:'' },
-               "back":{templateUrl:'partials/agenda.html'}
+               "back":{
+                   templateUrl:'partials/agenda.html',
+                   controller:'CalendarCtrl'
+               }
            }
        })
         .state("video",{
@@ -222,13 +233,25 @@ var ACTION_ID='5730449397571324216';
     
     app.controller('PostCtrl',['$scope','$stateParams','$sce','blogger.service',function($scope,$stateParams,$sce,$blogger){
         $scope.postid=$stateParams.postid;
-        console.log('want read post:'+$scope.postid);
+        //console.log('want read post:'+$scope.postid);
          $blogger.getPost(BLOG_ID,$scope.postid,API_KEY).then(function(post){
             $scope.post=$sce.trustAsHtml( post.content);
              $scope.title=$sce.trustAsHtml(post.title);
         });
     }]);
     
+    app.controller('PostsCtrl',['$scope','$stateParams','$sce','blogger.service',function($scope,$stateParams,$sce,$blogger){
+        $blogger.getPosts(BLOG_ID,ACTU_MAXRESULTS,API_KEY).then(function(posts){
+           //console.dir(posts);
+           $scope.posts=posts; 
+        });
+    }]);
+    
+    app.controller('CalendarCtrl',['$scope','calendar.service',function($scope,$calendar){
+        $calendar.getEvents(CALENDAR_ID,CALENDAR_MAXRESULTS,new Date().toISOString(),API_KEY).then(function(events){
+            $scope.events=events;
+        })
+    }]);
   /*  app.controller('QuiCtrl',['$scope','$sce','blogger.service',function($scope,$sce,$blogger){
         $blogger.getPost(BLOG_ID,QUI_ID,API_KEY).then(function(post){
             $scope.post=$sce.trustAsHtml( post.content);
@@ -610,5 +633,11 @@ var ACTION_ID='5730449397571324216';
 					}
 				}
 			};
-    }])
-}(angular);
+    }]);
+    
+    app.filter('moment', function () {
+		return function (dt,format) {
+			return moment(dt).locale("fr").format(format);
+		}
+    });
+}(angular,moment);
