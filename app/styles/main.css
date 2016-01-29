@@ -8691,6 +8691,9 @@ body {
 .deferred-cloak {
   display: none;
 }
+.container-fluid {
+  margin-top: 60px;
+}
 /* article */
 article {
   background-color: #b500ff;
