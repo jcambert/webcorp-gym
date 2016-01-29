@@ -31,6 +31,21 @@ var QUI_ID='3446268919979638524';
                "back":{template:''}
            }
        })
+       .state("post",{
+           url:"/post/:postid",
+           views:{
+               "front":{template:'' },
+               "back":{
+                   templateUrl:'partials/post.html',
+                   controller:'PostCtrl',
+                   link:function(scope,element,attr){
+                       
+                   }
+                   
+                }
+           }
+       })
+       
        .state("qui",{
            url:"/qui",
            views:{
@@ -206,9 +221,18 @@ var QUI_ID='3446268919979638524';
         }
     }]);
     
-    app.controller('QuiCtrl',['$scope','blogger.service',function($scope,$blogger){
+    app.controller('PostCtrl',['$scope','$stateParams','$sce','blogger.service',function($scope,$stateParams,$sce,$blogger){
+        $scope.postid=$stateParams.postid;
+       
+         $blogger.getPost(BLOG_ID,$scope.postid,API_KEY).then(function(post){
+            $scope.post=$sce.trustAsHtml( post.content);
+             $scope.title=$sce.trustAsHtml(post.title);
+        });
+    }]);
+    
+    app.controller('QuiCtrl',['$scope','$sce','blogger.service',function($scope,$sce,$blogger){
         $blogger.getPost(BLOG_ID,QUI_ID,API_KEY).then(function(post){
-            $scope.post=post.content;
+            $scope.post=$sce.trustAsHtml( post.content);
             
         });
         
@@ -220,7 +244,8 @@ var QUI_ID='3446268919979638524';
             restrict:'E',
             transclude:true,
             scope:{
-                title:'@title'
+                title:'@title',
+                postid:'@postid'
             },
             templateUrl:'partials/page.html'
         }
@@ -496,7 +521,7 @@ var QUI_ID='3446268919979638524';
     
     app.controller('TilesCtrl',['$scope',function($scope){
         $scope.tiles=[
-            {size:'wide',color:'amethyst',state:'qui',title:'Qui sommes-nous?',icon:'heart'},
+            {size:'wide',color:'amethyst',state:'post({postid:'+QUI_ID+'})',title:'Qui sommes-nous?',icon:'heart'},
             {size:'medium',color:'pink',state:'rejoindre',title:'Rejoindre',icon:'user-plus'},
             {size:'medium',color:'magenta',state:'action',title:'Actions',icon:'trophy'},
             {size:'wide',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
