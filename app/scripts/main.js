@@ -3,6 +3,8 @@ var API_KEY='AIzaSyBav3gF1spxn-jyuUiZ_dDQ0n49lnRmByE';
 var CHANNEL_ID='UCoCCSXjx4rTME6jpdYCj4XQ';
 var BLOG_ID='6187643531186496547';
 var QUI_ID='3446268919979638524';
+var REJOINDRE_ID='4204893462561567543';
+var ACTION_ID='5730449397571324216';
 !function (angular) {
 
    "use strict";
@@ -38,15 +40,12 @@ var QUI_ID='3446268919979638524';
                "back":{
                    templateUrl:'partials/post.html',
                    controller:'PostCtrl',
-                   link:function(scope,element,attr){
-                       
-                   }
                    
                 }
            }
        })
        
-       .state("qui",{
+     /*  .state("qui",{
            url:"/qui",
            views:{
                "front":{template:'' },
@@ -69,7 +68,7 @@ var QUI_ID='3446268919979638524';
                "front":{template:'' },
                "back":{templateUrl:'partials/action.html'}
            }
-       })
+       })*/
         .state("actu",{
            url:"/actu",
            views:{
@@ -223,20 +222,20 @@ var QUI_ID='3446268919979638524';
     
     app.controller('PostCtrl',['$scope','$stateParams','$sce','blogger.service',function($scope,$stateParams,$sce,$blogger){
         $scope.postid=$stateParams.postid;
-       
+        console.log('want read post:'+$scope.postid);
          $blogger.getPost(BLOG_ID,$scope.postid,API_KEY).then(function(post){
             $scope.post=$sce.trustAsHtml( post.content);
              $scope.title=$sce.trustAsHtml(post.title);
         });
     }]);
     
-    app.controller('QuiCtrl',['$scope','$sce','blogger.service',function($scope,$sce,$blogger){
+  /*  app.controller('QuiCtrl',['$scope','$sce','blogger.service',function($scope,$sce,$blogger){
         $blogger.getPost(BLOG_ID,QUI_ID,API_KEY).then(function(post){
             $scope.post=$sce.trustAsHtml( post.content);
             
         });
         
-    }]);
+    }]);*/
     
     app.directive("page",[function(){
         return{
@@ -344,7 +343,7 @@ var QUI_ID='3446268919979638524';
             replace:true,
             transclude:true,
             restrict:'E',
-            template:'<div ng-repeat="(key,value) in socials"><a href="#" ng-click="navigate(value)" class="social"><i class="fa fa-2x fa-{{key}}"></i></a></div>',
+            template:'<div ng-repeat="(key,value) in socials" ><a href="#" ng-click="navigate(value)" class="social"><i class="fa fa-2x fa-{{key}}"></i></a></div>',
             controller:function($scope){
                 $scope.navigate=function(url){
                     window.open(url,'_blank');
@@ -365,19 +364,20 @@ var QUI_ID='3446268919979638524';
                 //if(scope.tiles==undefined)return;
                 //console.log('tiles');
                 //console.dir(scope);
-                var tpl='<tile><a href="#"><h2></h2><i class="fa fa-3x"/></a></tile>';
-                var el=angular.element('<div></div>');
-                _.map(scope.tiles,function(tile){
-                    //console.dir(tile);
-                     var html=angular.element('<tile '+tile.size+' color="'+tile.color+'" ui-sref="'+tile.state+'"></tile');
+                var tpl='<tile tile-size="{{tile.size}}" color="{{tile.color}}"><a ><h2>{{tile.title}}</h2><i class="fa fa-3x fa-{{tile.icon}}"/></a></tile>';
+                var el=angular.element('<div ng-repeat="tile in tiles" ui-sref="{{tile.state}}">'+ tpl +'</div>');
+               /* _.map(scope.tiles,function(tile){
+                    console.dir(tile);
+                     var html=angular.element('<tile '+tile.size+' color="'+tile.color+'"></tile');
                                           
                      var a=angular.element('<a href="#"></a>');
+                     a.attr('ui-sref',tile.state);
                      a.append('<h2>'+tile.title+'</h2>');
                      a.append('<i class="fa fa-3x fa-'+tile.icon+'"/>');
                      
                      html.append(a);
                      el.append(html);
-                });
+                });*/
                 element.html(el);
                 $compile(el)(scope);
             }
@@ -511,7 +511,8 @@ var QUI_ID='3446268919979638524';
         this.socials={
                     'facebook': 'https://www.facebook.com/avenirgrandvillars',
                     'google-plus':'https://plus.google.com/u/0/+AvenirGrandvillars',
-                    'youtube':'https://www.youtube.com/user/AvenirDeGrandvillars'
+                    'youtube':'https://www.youtube.com/user/AvenirDeGrandvillars',
+                    'ioxhost':'http://avenirgrandvillars.blogspot.fr/'
                     };    
     }]); 
     
@@ -521,9 +522,9 @@ var QUI_ID='3446268919979638524';
     
     app.controller('TilesCtrl',['$scope',function($scope){
         $scope.tiles=[
-            {size:'wide',color:'amethyst',state:'post({postid:'+QUI_ID+'})',title:'Qui sommes-nous?',icon:'heart'},
-            {size:'medium',color:'pink',state:'rejoindre',title:'Rejoindre',icon:'user-plus'},
-            {size:'medium',color:'magenta',state:'action',title:'Actions',icon:'trophy'},
+            {size:'wide',color:'amethyst',state:'post({postid:"'+QUI_ID+'"})',title:'Qui sommes-nous?',icon:'heart'},
+            {size:'medium',color:'pink',state:'post({postid:"'+REJOINDRE_ID+'"})',title:'Rejoindre',icon:'user-plus'},
+            {size:'medium',color:'magenta',state:'post({postid:"'+ACTION_ID+'"})',title:'Actions',icon:'trophy'},
             {size:'wide',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
             {size:'wide',color:'wisteria',state:'agenda',title:'Agenda',icon:'calendar'},
             {size:'wide',color:'magenta',state:'video.playlists',title:'Vidéos',icon:'youtube'},
