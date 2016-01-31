@@ -21,7 +21,8 @@
     "videogular-angulartics": "~1.4.0",
     "videogular-themes-default": "~1.4.0",
     "bower-videogular-youtube": "videogular-youtube#~2.0.5",
-    "moment": "~2.11.1"
+    "moment": "~2.11.1",
+    "angular-animate": "~1.4.9"
   },
   "devDependencies": {
     "chai": "~3.4.2",

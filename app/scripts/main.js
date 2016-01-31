@@ -16,11 +16,13 @@ var CALENDAR_MAXRESULTS=10;
         'ngResource',
         'ui.router',
         "ngSanitize",
+        'ngAnimate',
         "com.2fdevs.videogular",
         "com.2fdevs.videogular.plugins.controls",
         "com.2fdevs.videogular.plugins.overlayplay",
         "com.2fdevs.videogular.plugins.poster",
         "info.vietnamcode.nampnq.videogular.plugins.youtube",
+        
         "angular.gapi",
         "angular.youtube",
         "angular.blogger",
@@ -232,11 +234,13 @@ var CALENDAR_MAXRESULTS=10;
     }]);
     
     app.controller('PostCtrl',['$scope','$stateParams','$sce','blogger.service',function($scope,$stateParams,$sce,$blogger){
+        $scope.loaded=false;
         $scope.postid=$stateParams.postid;
         //console.log('want read post:'+$scope.postid);
          $blogger.getPost(BLOG_ID,$scope.postid,API_KEY).then(function(post){
             $scope.post=$sce.trustAsHtml( post.content);
              $scope.title=$sce.trustAsHtml(post.title);
+             $scope.loaded=true;
         });
     }]);
     
