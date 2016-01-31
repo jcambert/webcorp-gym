@@ -118,4 +118,28 @@
        };
     }]);
    
+   
+   var photos=angular.module('angular.photos',[]);
+
+   photos.service('photos.service',['$q','$http',function($q,$http){
+        var self=this;
+        self.url='https://picasaweb.google.com/data/feed/api/user/:userid?alt=json&kind=album&callback=JSON_CALLBACK';
+        this.getAlbums= function(userid,token){
+            var _url=self.url;
+            if(token)
+                _url+='&access_token=:token';
+            _url=_url.replace(':userid',userid).replace(':token',token);
+
+           return self.load(_url);
+        }
+       
+        self.load = function(url) {
+            var d = $q.defer();
+            $http.jsonp(url ).success(function(data, status) {
+                console.dir(data);
+                d.resolve(data);
+            });
+            return d.promise;
+        }
+   }]);
 }(angular,gapi);

@@ -66,7 +66,7 @@ gapi.factory('GData', ['$rootScope',
 
         var isLogin = false;
         var user = null;
-
+        var userid=null;
         return {
 
             isLogin : function(value) {
@@ -82,7 +82,6 @@ gapi.factory('GData', ['$rootScope',
                 user = value;
                 $rootScope.gapi.user = value;
             }
-
         }
 
     }]);
@@ -172,6 +171,7 @@ gapi.factory('GAuth', ['$rootScope', '$q', 'GClient', 'GApi', 'GData', '$interva
                         user.name = resp.name;
                     user.link = resp.link;
                     GData.getUser(user);
+                    
                     deferred.resolve();
                 } else {
                     deferred.reject();

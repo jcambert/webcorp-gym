@@ -8,8 +8,9 @@ var ACTION_ID='5730449397571324216';
 var ACTU_MAXRESULTS=10;
 var CALENDAR_ID='gym.grandvillars@gmail.com';
 var CALENDAR_MAXRESULTS=10;
+var PICASA_ID='116763107480158322881';
 
-!function (angular,moment) {
+!function (angular,moment,_) {
 
    "use strict";
     var app = angular.module('gymapp', [ 
@@ -17,16 +18,18 @@ var CALENDAR_MAXRESULTS=10;
         'ui.router',
         "ngSanitize",
         'ngAnimate',
-        "com.2fdevs.videogular",
-        "com.2fdevs.videogular.plugins.controls",
-        "com.2fdevs.videogular.plugins.overlayplay",
-        "com.2fdevs.videogular.plugins.poster",
-        "info.vietnamcode.nampnq.videogular.plugins.youtube",
+        'com.2fdevs.videogular',
+        'com.2fdevs.videogular.plugins.controls',
+        'com.2fdevs.videogular.plugins.overlayplay',
+        'com.2fdevs.videogular.plugins.poster',
+        'info.vietnamcode.nampnq.videogular.plugins.youtube',
         
-        "angular.gapi",
-        "angular.youtube",
-        "angular.blogger",
-        "angular.calendar"
+        'angular.gapi',
+        'angular.youtube',
+        'angular.blogger',
+        'angular.calendar',
+        'angular.photos',
+        'angular.gallery'
     ]);
     
     app.config(['$stateProvider','$urlRouterProvider','$locationProvider',function($state,$route,$locationProvider){
@@ -51,31 +54,7 @@ var CALENDAR_MAXRESULTS=10;
                 }
            }
        })
-       
-     /*  .state("qui",{
-           url:"/qui",
-           views:{
-               "front":{template:'' },
-               "back":{
-                   templateUrl:'partials/qui.html',
-                   controller:'QuiCtrl'
-                }
-           }
-       })
-        .state("rejoindre",{
-           url:"/rejoindre",
-           views:{
-               "front":{template:'' },
-               "back":{templateUrl:'partials/rejoindre.html'}
-           }
-       })
-        .state("action",{
-           url:"/action",
-           views:{
-               "front":{template:'' },
-               "back":{templateUrl:'partials/action.html'}
-           }
-       })*/
+
         .state("actu",{
            url:"/actu",
            views:{
@@ -127,7 +106,10 @@ var CALENDAR_MAXRESULTS=10;
            url:"/photo",
            views:{
                "front":{template:'' },
-               "back":{templateUrl:'partials/photo.html'}
+               "back":{
+                   templateUrl:'partials/photo.html',
+                   controller:'PhotoCtrl'
+               }
            }
        })
         .state("lien",{
@@ -137,11 +119,14 @@ var CALENDAR_MAXRESULTS=10;
                "back":{templateUrl:'partials/lien.html'}
            }
        })
-       .state("temp",{
-           url:"/temp",
+       .state("admin",{
+           url:"/admin",
            views:{
                "front":{template:'' },
-               "back":{templateUrl:'/partials/temp.html'}
+               "back":{
+                   templateUrl:'/partials/admin.html',
+                   controller:'AdminCtrl'
+               }
            }
        })
        ;
@@ -165,19 +150,29 @@ var CALENDAR_MAXRESULTS=10;
          GAuth.setClient(CLIENT_KEY);
          GApi.load('oauth2', 'v2');
          GApi.load('youtube','v3');
-         GAuth.setScope("https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/calendar.readonly");
-        /* GAuth.checkAuth().then(
+         GAuth.setScope("https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/calendar.readonly  https://picasaweb.google.com/data/");
+         GAuth.checkAuth().then(
             function () {
-                console.log('user identified');
-                console.log($rootScope.gapi.user.picture);
+                //console.log('user identified');
+                //console.log($rootScope.gapi.user.picture);
                 $state.go('index');
             },
             function() {
-                console.log('User non identified');
+                //console.log('User non identified');
                 $state.go('index');     
                             
                 }
-            );*/
+            );
+            $rootScope.isAdmin=function(){
+                if($rootScope.gapi && $rootScope.gapi.login)
+                    return $rootScope.gapi.user.id == '116763107480158322881';
+                return false;
+            };
+            $rootScope.$watch('gapi.login',function(){
+                if($rootScope.gapi && $rootScope.gapi.login){
+                   //alert($rootScope.gapi.user.id);
+                }
+            });
             
             $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
             
@@ -210,6 +205,8 @@ var CALENDAR_MAXRESULTS=10;
         $scope.flip = function() {
             $scope.flipped = !$scope.flipped;
         };
+        
+        
         
          $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
             if( fromState.name=='video.playlists' && toState.name=="video.playlist")return;
@@ -246,7 +243,6 @@ var CALENDAR_MAXRESULTS=10;
     
     app.controller('PostsCtrl',['$scope','$stateParams','$sce','blogger.service',function($scope,$stateParams,$sce,$blogger){
         $blogger.getPosts(BLOG_ID,ACTU_MAXRESULTS,API_KEY).then(function(posts){
-           //console.dir(posts);
            $scope.posts=posts; 
         });
     }]);
@@ -256,13 +252,31 @@ var CALENDAR_MAXRESULTS=10;
             $scope.events=events;
         })
     }]);
-  /*  app.controller('QuiCtrl',['$scope','$sce','blogger.service',function($scope,$sce,$blogger){
-        $blogger.getPost(BLOG_ID,QUI_ID,API_KEY).then(function(post){
-            $scope.post=$sce.trustAsHtml( post.content);
+    
+    app.controller('PhotoCtrl',['$scope','$window','photos.service',function($scope,$window,$photos){
+        var token=undefined;
+        try{
+            token=$window.gapi.auth.getToken().access_token;
+        }catch(e){
             
+        }
+            
+        $photos.getAlbums(PICASA_ID,token).then(function(albums){
+          //  console.dir(albums);
+          $scope.albums=_.filter(albums.feed.entry,function(album){
+                if(album.gphoto$albumType)
+                    return album.gphoto$albumType.$t!="ScrapBook" && album.gphoto$albumType.$t!="ProfilePhotos";
+                return true;
+          });
+          console.dir($scope.albums);
         });
-        
-    }]);*/
+    }]);
+
+    app.controller('AdminCtrl',['$scope','$window','photos.service',function($scope,$window,$photos){
+        $photos.getAlbums(PICASA_ID,$window.gapi.auth.getToken().access_token).then(function(albums){
+            console.dir(albums);
+        });
+    }]);
     
     app.directive("page",[function(){
         return{
@@ -388,23 +402,10 @@ var CALENDAR_MAXRESULTS=10;
             restrict:'E',
             link:function(scope,element,attr){
                 
-                //if(scope.tiles==undefined)return;
-                //console.log('tiles');
-                //console.dir(scope);
-                var tpl='<tile tile-size="{{tile.size}}" color="{{tile.color}}"><a ><h2>{{tile.title}}</h2><i class="fa fa-3x fa-{{tile.icon}}"/></a></tile>';
+
+                var tpl='<tile tile-size="{{tile.size}}" color="{{tile.color}}" ng-show="($root.isAdmin() && {{tile.admin || false}}) || !{{tile.admin||false}}"><a ><h2>{{tile.title}}</h2><i class="fa fa-3x fa-{{tile.icon}}"/></a></tile>';
                 var el=angular.element('<div ng-repeat="tile in tiles" ui-sref="{{tile.state}}">'+ tpl +'</div>');
-               /* _.map(scope.tiles,function(tile){
-                    console.dir(tile);
-                     var html=angular.element('<tile '+tile.size+' color="'+tile.color+'"></tile');
-                                          
-                     var a=angular.element('<a href="#"></a>');
-                     a.attr('ui-sref',tile.state);
-                     a.append('<h2>'+tile.title+'</h2>');
-                     a.append('<i class="fa fa-3x fa-'+tile.icon+'"/>');
-                     
-                     html.append(a);
-                     el.append(html);
-                });*/
+
                 element.html(el);
                 $compile(el)(scope);
             }
@@ -430,6 +431,42 @@ var CALENDAR_MAXRESULTS=10;
             }
         }
         
+    }]);
+    
+    app.directive('photoGallery',[function(){
+        return{
+          replace:true,
+          restrict:'E',
+          scope:{
+              albums:'=albums'
+          },
+          template:'<photo-tile ng-repeat="album in albums" album="album"></photo-tile>'
+            
+        };
+    }]);
+    
+    app.directive('photoTile',[function(){
+        return{
+          repace:true,
+          restrict:'E',
+          scope:{
+            album:'=album'  
+          },
+          template:/*'<div>{{album.title.$t}}<img ng-src="{{album.media$group.media$thumbnail[0].url}}"/></div>'*/ ' ' +
+          '<div class="video-playlist-tile" tile-size="wide" >'+
+            '<a href="#" ui-sref="video.play({videoid:videoid})">'+
+                '<div class="video-tile-thumbnail " >' +
+                    '<div class="video-tile-img">' +
+                        '<img ng-src="{{album.media$group.media$thumbnail[0].url}}"/>' +
+                    '</div>' +
+                    '<div class="video-tile-description">' +
+                        '<h3 >{{album.title.$t}}</h3>' +
+                        '<h4>{{album.summary.$t}}</h4>' +
+                   '</div>' +
+                '</div>' +
+            '</a>' +
+        '</div>'
+        };
     }]);
     
     app.directive('videoPlaylists',[function(){
@@ -557,7 +594,7 @@ var CALENDAR_MAXRESULTS=10;
             {size:'wide',color:'magenta',state:'video.playlists',title:'Vidéos',icon:'youtube'},
             {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
             {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
-           // {size:'wide',color:'magenta',state:'temp',title:'Vidéos',icon:'youtube'},
+            {size:'wide',color:'magenta',state:'admin',title:'Administration',icon:'tachometer',admin:true},
             ];
         
         
@@ -644,4 +681,4 @@ var CALENDAR_MAXRESULTS=10;
 			return moment(dt).locale("fr").format(format);
 		}
     });
-}(angular,moment);
+}(angular,moment,_);
