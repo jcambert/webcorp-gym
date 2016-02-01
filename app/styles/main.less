@@ -259,126 +259,118 @@ img.ng-thumb {
 }
 
 .ng-overlay { 
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  opacity: 0.85;
-  z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.85;
+    z-index:  2147483647 ;
+    padding:0;
+    margin-top:0px;
+
+    .ng-gallery-content { 
+        
+    text-align: center;
+
+    a.close-popup {
+        font-size: 42px;
+        float: right;
+        color: #fff;
+        text-decoration: none;
+        margin: 0 30px 0 0;
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        right: 0;
+    }
+    a.nav-left, a.nav-right{
+        color: #fff;
+        text-decoration: none;
+        font-size: 60px;
+        cursor: pointer;
+        outline: none;
+    }
+    a.nav-left{
+        position: fixed;
+        left: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    a.nav-right{
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+    
+    } 
+    img{
+            height: auto;
+            max-height: calc(100% - 150px);
+            max-width: calc(100% - 100px);
+            position: relative;
+            display: block;
+            margin: 0 auto 0 auto;
+            top: 50%;
+            transform: translateY(-50%);
+            -webkit-transform: translateY(-50%);
+            cursor: pointer;
+    }
+    img.effect {
+            animation: fadeIn 0.5s;
+        }
+        span.info-text{
+            color: #fff;
+            display: inline-block;
+            width: 100%;
+            height: 20px;
+            font-weight: bold;
+            text-align: center;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 100px;
+        }
+        .ng-thumbnails-wrapper {
+            width: 400px;
+            height: 70px;
+            text-align: center;
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            overflow-x: hidden;
+            
+            .ng-thumbnails {
+                width: 4000px;
+                height: 70px;
+                div{
+                    img{
+                        width: auto;
+                        height: 70px;
+                        float: left;
+                        margin-right: 10px;
+                        cursor: pointer;
+                        opacity: 0.6; 
+                   
+                        &:hover,&.active{
+                            transition: opacity 0.25s ease;
+                            opacity: 1;  
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-.ng-gallery-content { 
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10000;
-  text-align: center;
-}
-
-.ng-gallery-content > a.close-popup {
-  font-size: 42px;
-  float: right;
-  color: #fff;
-  text-decoration: none;
-  margin: 0 30px 0 0;
-  cursor: pointer;
-  position: absolute;
-  top: 20px;
-  right: 0;
-}
-
-.ng-gallery-content > a.nav-left, .ng-gallery-content > a.nav-right {
-  color: #fff;
-  text-decoration: none;
-  font-size: 60px;
-  cursor: pointer;
-  outline: none;
-}
-
-.ng-gallery-content > a.nav-left {
-  position: fixed;
-  left: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.ng-gallery-content > a.nav-right {
-  position: fixed;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.ng-gallery-content > img {
-  height: auto;
-  max-height: calc(100% - 150px);
-  max-width: calc(100% - 100px);
-  position: relative;
-  display: block;
-  margin: 0 auto 0 auto;
-  top: 50%;
-  transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-  cursor: pointer;
-}
-
-.ng-gallery-content > img.effect {
-  animation: fadeIn 0.5s;
-}
 
 @keyframes fadeIn {
     from { opacity: 0.3; }
       to { opacity: 1; }
-}
-
-.ng-gallery-content > span.info-text {
-  color: #fff;
-  display: inline-block;
-  width: 100%;
-  height: 20px;
-  font-weight: bold;
-  text-align: center;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 100px;
-}
-
-.ng-gallery-content > .ng-thumbnails-wrapper {
-  width: 400px;
-  height: 70px;
-  text-align: center;
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  overflow-x: hidden;
-}
-
-.ng-gallery-content > .ng-thumbnails-wrapper > .ng-thumbnails {
-  width: 4000px;
-  height: 70px;
-}
-
-.ng-gallery-content > .ng-thumbnails-wrapper > .ng-thumbnails > div > img {
-  width: auto;
-  height: 70px;
-  float: left;
-  margin-right: 10px;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.ng-gallery-content > .ng-thumbnails-wrapper > .ng-thumbnails > div > img:hover, 
-.ng-gallery-content > .ng-thumbnails-wrapper > .ng-thumbnails > div > img.active {
-  transition: opacity 0.25s ease;
-  opacity: 1;
 }
 
 /* END PHOTO GALLERY */
@@ -538,4 +530,7 @@ body {
  
   background-color: @background-color;
   
+}
+.navbar-fixed-top{
+    position: fixed;
 }

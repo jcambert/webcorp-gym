@@ -129,6 +129,17 @@ var PICASA_ID='116763107480158322881';
                }
            }
        })
+       
+       .state("gallery",{
+           url:"/gallery",
+           views:{
+               "front":{template:'' },
+               "back":{
+                   templateUrl:'/partials/gallery.html',
+                   controller:'GalleryCtrl'
+               }
+           }
+       })
        ;
        
        //check browser support
@@ -276,6 +287,14 @@ var PICASA_ID='116763107480158322881';
         $photos.getAlbums(PICASA_ID,$window.gapi.auth.getToken().access_token).then(function(albums){
             console.dir(albums);
         });
+    }]);
+    
+    app.controller('GalleryCtrl',['$scope','$state',function($scope,$state){
+        $scope.opened=true;
+        $scope.close = function(){
+            $scope.opened=false;
+            $state.go('photo');
+        }
     }]);
     
     app.directive("page",[function(){
@@ -595,6 +614,7 @@ var PICASA_ID='116763107480158322881';
             {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
             {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
             {size:'wide',color:'magenta',state:'admin',title:'Administration',icon:'tachometer',admin:true},
+            {size:'medium',color:'magenta',state:'gallery',title:'Gallerie',icon:'picture-o'},
             ];
         
         
