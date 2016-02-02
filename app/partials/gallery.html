@@ -2,8 +2,8 @@
 <div class="ng-overlay" ng-show="opened">
     <div class="ng-gallery-content" ng-show="opened">
         <a class="close-popup" ng-click="close()"><i class="fa fa-close"></i></a>
-        <a class="nav-left" ng-click="prevImage()"><i class="fa fa-angle-left"></i></a>
-        <img ng-src="{{ img }}" ng-click="nextImage()" ng-show="!loading" class="effect" />
-        <a class="nav-right" ng-click="nextImage()"><i class="fa fa-angle-right"></i></a>
+        <a class="nav-left" ng-click="previous()"><i class="fa fa-angle-left"></i></a>
+        <img ng-src="{{ image }}" ng-click="next()" ng-show="!loading" class="effect img-responsive" alt="Responsive image"/>
+        <a class="nav-right" ng-click="next()"><i class="fa fa-angle-right"></i></a>
     </div>
 </div>

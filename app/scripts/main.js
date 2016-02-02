@@ -289,12 +289,123 @@ var PICASA_ID='116763107480158322881';
         });
     }]);
     
-    app.controller('GalleryCtrl',['$scope','$state',function($scope,$state){
-        $scope.opened=true;
+    app.controller('GalleryCtrl',['$scope','$state','$q','$http','$document',function($scope,$state,$q,$http,$document){
+        var keys_codes = {
+            enter : 13,
+            esc   : 27,
+            left  : 37,
+            right : 39
+        };
+        
+        var self=this;
+        var $body = $document.find('body');
+        $scope.opened=false;
+        $scope.rollon=false;
+        $scope.index=0;
+        $scope.images=[];
+        $scope.loading=false;
+        $scope.$watch('index',function(){
+            if(!self.canMoveTo($scope.index))return;
+            self.showImage($scope.index);
+        });
+        $scope.$watch('images',function(){
+            $scope.moveTo(0);
+        });
+        
+        //modify dom on top for complete overlay
+        $scope.$watch('opened',function(){
+            
+        });
+        
         $scope.close = function(){
-            $scope.opened=false;
-            $state.go('photo');
+            $scope.opened=true;
+        };
+        $scope.previous =function(){
+            if(self.hasPrevious())
+                $scope.index-=1;
+            else if($scope.rollon)
+                $scope.index=$scope.images.length-1;
+        };
+        $scope.next = function(){
+            if(self.hasNext())
+                $scope.index+=1;
+            else if($scope.rollon)
+                $scope.index=0;    
+        };
+        $scope.moveTo = function(index){
+            $scope.index=index;
+        };
+        self.hasNext = function(){
+            return $scope.index+1<$scope.images.length;
         }
+        self.hasPrevious = function(){
+            return $scope.index-1<=0;
+        }
+        self.canMoveTo = function(index){
+            return !$scope.loading && self.verifyImages() && index>=0 && index<$scope.images.length;
+        };
+        self.verifyImages = function(){
+            return Array.isArray( $scope.images);
+        };
+        self.showImage = function(index){
+            
+            self.loadImage(index).then(
+                function(resp){
+                    console.dir(resp);
+                    $scope.image=resp.src;
+                    $scope.description=$scope.images[index].description || '';
+                    $scope.loading=false;
+                },
+                function(error){
+                    console.error(error);
+                    
+                }
+            )
+        }
+        self.loadImage = function(index){
+            var d=$q.defer();
+             var image = new Image();
+
+            image.onload = function () {
+                $scope.loading = false;
+                if (typeof this.complete === false || this.naturalWidth === 0) {
+                    d.reject();
+                }
+                d.resolve(image);
+            };
+    
+            image.onerror = function () {
+                d.reject();
+            };
+            
+            image.src = $scope.images[index].url;
+            $scope.loading = true;
+            return d.promise;
+        };
+        
+         $body.bind('keydown', function(event) {
+            if (!scope.opened) {
+                return;
+            }
+            var which = event.which;
+            if (which === keys_codes.esc) {
+                scope.closeGallery();
+            } else if (which === keys_codes.right || which === keys_codes.enter) {
+                scope.nextImage();
+            } else if (which === keys_codes.left) {
+                scope.prevImage();
+            }
+
+            scope.$apply();
+        });
+                
+        $scope.images=[
+            {url:'/assets/images/bee.jpg',
+            description:'papillons'},
+            {url:'/assets/images/nature.jpg',
+            description:'papillons'}
+        ];
+        $scope.opened=true;
     }]);
     
     app.directive("page",[function(){
@@ -702,3 +813,4 @@ var PICASA_ID='116763107480158322881';
 		}
     });
 }(angular,moment,_);
+

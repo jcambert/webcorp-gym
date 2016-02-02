@@ -297,26 +297,27 @@ img.ng-thumb {
         left: 30px;
         top: 50%;
         transform: translateY(-50%);
+        z-index: 1;
     }
     a.nav-right{
             position: fixed;
             right: 30px;
             top: 50%;
             transform: translateY(-50%);
+            z-index: 1;
     
     } 
-    img{
-            height: auto;
-            max-height: calc(100% - 150px);
-            max-width: calc(100% - 100px);
-            position: relative;
+    /*mg{
+         max-height:100%; width:auto;
+           
             display: block;
             margin: 0 auto 0 auto;
             top: 50%;
-            transform: translateY(-50%);
-            -webkit-transform: translateY(-50%);
+           // transform: translateY(-50%);
+            //-webkit-transform: translateY(-50%);
             cursor: pointer;
-    }
+            z-index:0;
+    }*/
     img.effect {
             animation: fadeIn 0.5s;
         }

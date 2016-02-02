@@ -8991,6 +8991,17 @@ img.ng-thumb {
 }
 .ng-overlay .ng-gallery-content {
   text-align: center;
+  /*mg{
+         max-height:100%; width:auto;
+           
+            display: block;
+            margin: 0 auto 0 auto;
+            top: 50%;
+           // transform: translateY(-50%);
+            //-webkit-transform: translateY(-50%);
+            cursor: pointer;
+            z-index:0;
+    }*/
 }
 .ng-overlay .ng-gallery-content a.close-popup {
   font-size: 42px;
@@ -9016,24 +9027,14 @@ img.ng-thumb {
   left: 30px;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 1;
 }
 .ng-overlay .ng-gallery-content a.nav-right {
   position: fixed;
   right: 30px;
   top: 50%;
   transform: translateY(-50%);
-}
-.ng-overlay .ng-gallery-content img {
-  height: auto;
-  max-height: calc(-50%);
-  max-width: calc(0%);
-  position: relative;
-  display: block;
-  margin: 0 auto 0 auto;
-  top: 50%;
-  transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-  cursor: pointer;
+  z-index: 1;
 }
 .ng-overlay .ng-gallery-content img.effect {
   animation: fadeIn 0.5s;
