@@ -8876,6 +8876,7 @@ flipper[vertical] div.flipped .back {
   transition: all 0.5s ease-out;
   opacity: 0.75;
   cursor: pointer;
+  margin-top: 15px;
   word-wrap: break-word;
 }
 .video-playlist-tile .video-tile-thumbnail {
