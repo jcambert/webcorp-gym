@@ -32,7 +32,7 @@
        
         this.getPlaylists = function(channel,key,options){
             var d=$q.defer();
-		    if($rootScope.gapi.login){
+		    if($rootScope.gapi.login && false){
                     var request = gapi.client.youtube.playlists.list(options);
                     request.execute(function(resp){
                     if(resp.items)d.resolve(resp.items);
@@ -52,7 +52,7 @@
        
        this.getPlaylistItems = function(playlist,key,options){
             var d=$q.defer();
-		    if($rootScope.gapi.login){
+		    if($rootScope.gapi.login && false){
                    //var request = gapi.client.youtube.playlists.list(options);
                     request.execute(function(resp){
                     if(resp.items)d.resolve(resp.items);
