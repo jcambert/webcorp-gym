@@ -11,6 +11,8 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    
+    <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />-->
     <link rel="stylesheet" href="styles/main.css">
     <!-- build:js scripts/vendor/modernizr.js -->
     <script src="bower_components/modernizr/modernizr.js"></script>
@@ -60,12 +62,11 @@
 </header> 
      
      <div class="container-fluid " >
-            <div class="row">
-                <flipper flipped="flipped" vertical>
-                    <front view='front'></front>
-                    <back  view='back'></back>
-                </flipper>  
-            </div>
+        <div class="row"  ui-view/>
+        <!--<flipper flipped="flipped" vertical>
+            <front view='front'></front>
+            <back  view='back'></back>
+        </flipper>  -->
       </div>
 
     <!--[if lt IE 7]>
@@ -90,8 +91,10 @@
     
     <!-- build:js scripts/vendor/jquery.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/flip/dist/jquery.flip.js"></script>
+    <!--<script src="bower_components/jquery-mobile/js/jquery.mobile.js"></script>-->
+    <!--<script src="bower_components/flip/dist/jquery.flip.js"></script>-->
     <!-- endbuild -->
+    <!--<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
     
     <!-- build:js scripts/vendor/bootstrap.js -->
     <script src="bower_components/bootstrap/js/affix.js"></script>
@@ -136,7 +139,8 @@
    
    <script>
        $(document).ready(function(){
-         
+         //$.mobile.linkBindingEnabled = false;
+         //$.mobile.hashListeningEnabled = false;  
           // $('.card').flip({autoSize:false});
           
        });

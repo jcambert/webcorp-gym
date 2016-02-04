@@ -38,49 +38,57 @@ var PICASA_ID='116763107480158322881';
        $state
        .state("index",{
            url:"/",
-           views:{
+           templateUrl:'partials/index.html'
+          /* views:{
                "front":{templateUrl:'partials/index.html'},
                "back":{template:''}
-           }
+           }*/
        })
        .state("post",{
            url:"/post/:postid",
-           views:{
+           templateUrl:'partials/post.html',
+           controller:'PostCtrl',
+           /*views:{
                "front":{template:'' },
                "back":{
                    templateUrl:'partials/post.html',
                    controller:'PostCtrl',
                    
                 }
-           }
+           }*/
        })
 
         .state("actu",{
            url:"/actu",
-           views:{
+           templateUrl:'partials/actu.html',
+            controller:'PostsCtrl'
+           /*views:{
                "front":{template:'' },
                "back":{
                    templateUrl:'partials/actu.html',
                    controller:'PostsCtrl'
                    }
-           }
+           }*/
        })
         .state("agenda",{
            url:"/agenda",
-           views:{
+           templateUrl:'partials/agenda.html',
+            controller:'CalendarCtrl'
+           /*views:{
                "front":{template:'' },
                "back":{
                    templateUrl:'partials/agenda.html',
                    controller:'CalendarCtrl'
                }
-           }
+           }*/
        })
         .state("video",{
            url:"/video",
-           views:{
+           templateUrl:'/partials/video.html'
+           /*views:{
                "front":{template:'' },
                "back":{templateUrl:'/partials/video.html'}
-           }
+           }*/
        })
        
        .state("video.playlists",{
@@ -104,41 +112,48 @@ var PICASA_ID='116763107480158322881';
        
         .state("photo",{
            url:"/photo",
-           views:{
+            templateUrl:'partials/photo.html',
+            controller:'PhotoCtrl',
+           /*views:{
                "front":{template:'' },
                "back":{
                    templateUrl:'partials/photo.html',
                    controller:'PhotoCtrl'
                }
-           }
+           }*/
        })
         .state("lien",{
            url:"/lien",
-           views:{
+           templateUrl:'partials/lien.html',
+           /*views:{
                "front":{template:'' },
                "back":{templateUrl:'partials/lien.html'}
-           }
+           }*/
        })
        .state("admin",{
            url:"/admin",
-           views:{
+            templateUrl:'/partials/admin.html',
+            controller:'AdminCtrl',
+           /*views:{
                "front":{template:'' },
                "back":{
                    templateUrl:'/partials/admin.html',
                    controller:'AdminCtrl'
                }
-           }
+           }*/
        })
        
        .state("gallery",{
            url:"/gallery",
-           views:{
+            templateUrl:'/partials/gallery.html',
+            controller:'GalleryCtrl',
+           /*views:{
                "front":{template:'' },
                "back":{
                    templateUrl:'/partials/gallery.html',
                    controller:'GalleryCtrl'
                }
-           }
+           }*/
        })
        ;
        
@@ -533,8 +548,8 @@ var PICASA_ID='116763107480158322881';
             link:function(scope,element,attr){
                 
 
-                var tpl='<tile tile-size="{{tile.size}}" color="{{tile.color}}" ng-show="($root.isAdmin() && {{tile.admin || false}}) || !{{tile.admin||false}}"><a ><h2>{{tile.title}}</h2><i class="fa fa-3x fa-{{tile.icon}}"/></a></tile>';
-                var el=angular.element('<div ng-repeat="tile in tiles" ui-sref="{{tile.state}}">'+ tpl +'</div>');
+                var tpl='<tile tile-size="{{tile.size}}" color="{{tile.color}}" state="{{tile.state}}" ng-show="($root.isAdmin() && {{tile.admin || false}}) || !{{tile.admin||false}}"><a ><h2>{{tile.title}}</h2><i class="fa fa-3x fa-{{tile.icon}}"/></a></tile>';
+                var el=angular.element('<div ng-repeat="tile in tiles" >'+ tpl +'</div>');
 
                 element.html(el);
                 $compile(el)(scope);
@@ -549,9 +564,9 @@ var PICASA_ID='116763107480158322881';
             restrict:'E',
             scope:{
                 color:'@color',
-                state:'='
+                state:'@state'
             },
-            template:'<div ><div ng-transclude class="thumbnail tile"></div></div>',
+            template:'<a href="#" ui-sref="{{state}}" data-transition="flip" ><div ng-transclude class="thumbnail tile"></div></a>',
             link:function(scope,element,attrs){
                 element.find('div').addClass("tile-"+scope.color);
                 if('state' in attrs)
@@ -730,7 +745,18 @@ var PICASA_ID='116763107480158322881';
         
         
     }]);
-    app.directive("flipper", ['$rootScope','$timeout',function($rootScope, $timeout) {
+    
+    /*app.directive('jqm',['$timeout',function($timeout){
+        return {
+            link: function(scope, elm, attr) {
+                $timeout(function(){
+                    elm.trigger('create');
+                    console.log('jqm linked');
+                });
+            }
+        };
+    }]);*/
+    /*app.directive("flipper", ['$rootScope','$timeout',function($rootScope, $timeout) {
             return {
                 restrict: "E",
                 template: '<div class="flipper " ng-transclude ng-class="{ flipped: flipped }"></div>',
@@ -768,7 +794,7 @@ var PICASA_ID='116763107480158322881';
                     scope.view=attrs['view'];
                 }
             }
-        }]);  
+        }]);  */
         
         app.controller('VideoCtrl',
 		["$sce",'$rootScope', function ($sce,$rootScope) {
