@@ -23,7 +23,8 @@
     "bower-videogular-youtube": "videogular-youtube#~2.0.5",
     "moment": "~2.11.1",
     "angular-animate": "~1.4.9",
-    "jquery-mobile": "~1.4.5"
+    "jquery-mobile": "~1.4.5",
+    "angular-bootstrap": "^1.1.2"
   },
   "devDependencies": {
     "chai": "~3.4.2",

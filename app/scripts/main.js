@@ -18,6 +18,7 @@ var PICASA_ID='116763107480158322881';
         'ui.router',
         "ngSanitize",
         'ngAnimate',
+        'ui.bootstrap',
         'com.2fdevs.videogular',
         'com.2fdevs.videogular.plugins.controls',
         'com.2fdevs.videogular.plugins.overlayplay',
@@ -279,8 +280,10 @@ var PICASA_ID='116763107480158322881';
         })
     }]);
     
-    app.controller('PhotoCtrl',['$scope','$window','photos.service',function($scope,$window,$photos){
+    app.controller('PhotoCtrl',['$scope','$window','photos.service','$q',function($scope,$window,$photos,$q){
         var token=undefined;
+        var slides = $scope.slides = [];
+        var currIndex = 0;
         try{
             token=$window.gapi.auth.getToken().access_token;
         }catch(e){
@@ -296,6 +299,29 @@ var PICASA_ID='116763107480158322881';
           });
           console.dir($scope.albums);
         });
+        
+        $scope.showAlbum = function(index){
+          $photos.getPhotos(PICASA_ID,$scope.albums[index].gphoto$id.$t,token).then(function(photos){
+             $scope.slides=photos.feed.entry; 
+             $scope.showSlide=true;
+             console.dir($scope.slides);
+          });
+          //$scope.slides= $scope.albums[index];
+          //$scope.showSlide=true;
+          
+        };
+       /* $scope.addSlide = function() {
+            var newWidth = 600 + slides.length + 1;
+            slides.push({
+            image: 'http://lorempixel.com/' + newWidth + '/300',
+            text: ['Nice image','Awesome photograph','That is so cool','I love that'][slides.length % 4],
+            id: currIndex++
+            });
+        };
+        for (var i = 0; i < 4; i++) {
+            $scope.addSlide();
+        }*/
+        $scope.showSlide=false;
     }]);
 
     app.controller('AdminCtrl',['$scope','$window','photos.service',function($scope,$window,$photos){
@@ -582,9 +608,9 @@ var PICASA_ID='116763107480158322881';
         return{
           replace:true,
           restrict:'E',
-          scope:{
+         /* scope:{
               albums:'=albums'
-          },
+          },*/
           template:'<photo-tile ng-repeat="album in albums" album="album"></photo-tile>'
             
         };
@@ -594,12 +620,12 @@ var PICASA_ID='116763107480158322881';
         return{
           repace:true,
           restrict:'E',
-          scope:{
+          /*scope:{
             album:'=album'  
-          },
+          },*/
           template:/*'<div>{{album.title.$t}}<img ng-src="{{album.media$group.media$thumbnail[0].url}}"/></div>'*/ ' ' +
           '<div class="video-playlist-tile" tile-size="wide" >'+
-            '<a href="#" ui-sref="video.play({videoid:videoid})">'+
+            '<a href="#" ng-click="showAlbum($index)">'+
                 '<div class="video-tile-thumbnail " >' +
                     '<div class="video-tile-img">' +
                         '<img ng-src="{{album.media$group.media$thumbnail[0].url}}"/>' +
@@ -731,16 +757,16 @@ var PICASA_ID='116763107480158322881';
     
     app.controller('TilesCtrl',['$scope',function($scope){
         $scope.tiles=[
-            {size:'wide',color:'amethyst',state:'post({postid:"'+QUI_ID+'"})',title:'Qui sommes-nous?',icon:'heart'},
+            {size:'medium',color:'amethyst',state:'post({postid:"'+QUI_ID+'"})',title:'Qui sommes-nous?',icon:'heart'},
             {size:'medium',color:'pink',state:'post({postid:"'+REJOINDRE_ID+'"})',title:'Rejoindre',icon:'user-plus'},
             {size:'medium',color:'magenta',state:'post({postid:"'+ACTION_ID+'"})',title:'Actions',icon:'trophy'},
-            {size:'wide',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
+            {size:'medium',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
             {size:'wide',color:'wisteria',state:'agenda',title:'Agenda',icon:'calendar'},
             {size:'wide',color:'magenta',state:'video.playlists',title:'Vidéos',icon:'youtube'},
             {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
             {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
             {size:'wide',color:'magenta',state:'admin',title:'Administration',icon:'tachometer',admin:true},
-            {size:'medium',color:'magenta',state:'gallery',title:'Gallerie',icon:'picture-o'},
+            //{size:'medium',color:'magenta',state:'gallery',title:'Gallerie',icon:'picture-o'},
             ];
         
         

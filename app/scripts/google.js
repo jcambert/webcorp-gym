@@ -123,15 +123,25 @@
 
    photos.service('photos.service',['$q','$http',function($q,$http){
         var self=this;
-        self.url='https://picasaweb.google.com/data/feed/api/user/:userid?alt=json&kind=album&callback=JSON_CALLBACK';
+        self.albums_url='https://picasaweb.google.com/data/feed/api/user/:userid?alt=json&kind=album&callback=JSON_CALLBACK';
+        self.photos_url='https://picasaweb.google.com/data/feed/api/user/:userid/albumid/:albumid?alt=json&callback=JSON_CALLBACK&kind=photo&imgmax=1600&thumbsize=512,400,160c';
         this.getAlbums= function(userid,token){
-            var _url=self.url;
+            var _url=self.albums_url;
             if(token)
                 _url+='&access_token=:token';
             _url=_url.replace(':userid',userid).replace(':token',token);
 
            return self.load(_url);
         }
+       
+       this.getPhotos = function(userid,albumid,token){
+           var _url=self.photos_url;
+            if(token)
+                _url+='&access_token=:token';
+            _url=_url.replace(':userid',userid).replace(':albumid',albumid).replace(':token',token);
+
+           return self.load(_url);
+       }
        
         self.load = function(url) {
             var d = $q.defer();
