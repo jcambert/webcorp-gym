@@ -8681,7 +8681,7 @@ body {
 .page {
   border-width: 2px;
 }
-.carousel-wrapper {
+.fullscreen-wrapper {
   position: fixed;
   top: 0;
   left: 0;

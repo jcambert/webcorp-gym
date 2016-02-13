@@ -105,7 +105,7 @@ var PICASA_ID='116763107480158322881';
        })
        
        .state("video.play",{
-           url:'/play/:videoid',
+           url:'/:playlistid/:videoid',
            templateUrl:'/partials/video.play.html',
            controller:'VideoPlayerCtrl',
            controllerAs:'controller'
@@ -218,7 +218,7 @@ var PICASA_ID='116763107480158322881';
                         }
                     );
                    
-                }else if(toState.name=='video.playlist'){
+                }else if(toState.name=='video.playlist.play'){
                     console.dir(toState);
                     //youtube.getPlaylistItems();
                 }
@@ -734,7 +734,7 @@ var PICASA_ID='116763107480158322881';
                 playlistitems:'=playlistitems',
                 size:'@size'
             },
-            template:'<div><div ng-repeat="item in playlistitems.items"><video-playlist-item videoid="{{item.snippet.resourceId.videoId}}" title="{{item.snippet.title}}" description="{{item.snippet.description}}" img="{{item.snippet.thumbnails.medium.url}}"/></div></div>'
+            template:'<div><div ng-repeat="item in playlistitems.items"><video-playlist-item playlistid="{{item.snippet.playlistId}}" videoid="{{item.snippet.resourceId.videoId}}" title="{{item.snippet.title}}" description="{{item.snippet.description}}" img="{{item.snippet.thumbnails.medium.url}}"/></div></div>'
             
         }
     }]);
@@ -744,6 +744,7 @@ var PICASA_ID='116763107480158322881';
             replace:true,
             restrict:'E',
             scope:{
+                playlistid:'@playlistid',
                 videoid:'@videoid',
                 title:'@title',
                 description:'@description',
@@ -884,7 +885,7 @@ var PICASA_ID='116763107480158322881';
 		}]
 	);
     
-    app.controller('VideoPlaylistCtrl',['$scope','$stateParams','youtube.service',function($scope,$stateParams,youtube){
+    app.controller('VideoPlaylistCtrl',['$scope','$state','$stateParams','youtube.service',function($scope,$state,$stateParams,youtube){
        console.dir($stateParams);
         var playlistid=$stateParams.playlistid;
         youtube.getPlaylistItems(playlistid,API_KEY, {part:'snippet'}).then(function(videos){
@@ -894,8 +895,10 @@ var PICASA_ID='116763107480158322881';
         });
     }]);
     
-    app.controller('VideoPlayerCtrl',['$scope','$stateParams','$sce',function($scope,$stateParams,$sce){
+    app.controller('VideoPlayerCtrl',['$scope','$state','$stateParams','$sce',function($scope,$state,$stateParams,$sce){
         console.log('VideoPlayerCtrl initilized: '+$stateParams.videoid);
+        $scope.playlistid=$stateParams.playlistid;
+        console.log($scope.playlistid);
         this.config = {
             	preload: "none",
 				sources: [
@@ -913,6 +916,9 @@ var PICASA_ID='116763107480158322881';
 					}
 				}
 			};
+         $scope.close = function(){
+             $state.go('video.playlist',{playlistid:$scope.playlistid});
+         } 
     }]);
     
     app.filter('moment', function () {

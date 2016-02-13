@@ -1,7 +1,7 @@
 <page title="Photos">
     <photo-gallery albums="albums" ng-hide="showSlide"/>
     
-  <carousel class="carousel-wrapper" close-button ng-show="showSlide">
+  <carousel class="fullscreen-wrapper" close-button ng-show="showSlide">
         
         <uib-carousel interval="3000" no-wrap="noWrapSlides" close-button>
             <uib-slide ng-repeat="slide in slides" active="slide.active" index="$index">
