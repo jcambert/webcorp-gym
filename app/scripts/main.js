@@ -813,9 +813,10 @@ var PICASA_ID='116763107480158322881';
             {size:'medium',color:'pink',state:'post({postid:"'+REJOINDRE_ID+'"})',title:'Rejoindre',icon:'user-plus'},
             {size:'medium',color:'magenta',state:'post({postid:"'+ACTION_ID+'"})',title:'Actions',icon:'trophy'},
             {size:'medium',color:'asbestos',state:'actu',title:'Actualités',icon:'newspaper-o'},
+            {size:'medium',color:'magenta',state:'video.playlists',title:'Vidéos',icon:'youtube'},
+            {size:'medium',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
             {size:'wide',color:'wisteria',state:'agenda',title:'Agenda',icon:'calendar'},
-            {size:'wide',color:'magenta',state:'video.playlists',title:'Vidéos',icon:'youtube'},
-            {size:'wide',color:'teal',state:'photo',title:'Photos',icon:'picture-o'},
+            
             {size:'wide',color:'turquoise',state:'lien',title:'Liens',icon:'external-link'},
             {size:'wide',color:'magenta',state:'admin',title:'Administration',icon:'tachometer',admin:true},
             //{size:'medium',color:'magenta',state:'gallery',title:'Gallerie',icon:'picture-o'},
