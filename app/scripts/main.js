@@ -158,6 +158,8 @@ var PICASA_ID='116763107480158322881';
        })
        ;
        
+       
+
        //check browser support
         if(window.history && window.history.pushState){
             //$locationProvider.html5Mode(true); will cause an error $location in HTML5 mode requires a  tag to be present! Unless you set baseUrl tag after head tag like so: <head> <base href="/">
@@ -165,10 +167,11 @@ var PICASA_ID='116763107480158322881';
          // to know more about setting base URL visit: https://docs.angularjs.org/error/$location/nobase
 
          // if you don't wish to set base URL then use this
-         $locationProvider.html5Mode({
+         $locationProvider/*.html5Mode({
                  enabled: true,
                  requireBase: false
-          });
+          })*/
+          .hashPrefix('!');
         }
     }]);
 
@@ -182,11 +185,11 @@ var PICASA_ID='116763107480158322881';
             function () {
                 //console.log('user identified');
                 //console.log($rootScope.gapi.user.picture);
-                $state.go('index');
+               // $state.go('index');
             },
             function() {
                 //console.log('User non identified');
-                $state.go('index');     
+               // $state.go('index');     
                             
                 }
             );
@@ -472,7 +475,7 @@ var PICASA_ID='116763107480158322881';
             replace:true,
             
             link:function($scope,$element,$attrs,$ctrl,$transclude){
-                var elt=angular.element('<a role="button" href="#" class="closebutton" ><i class="fa fa-close fa-3x"></i></a>');
+                var elt=angular.element('<a role="button"  class="closebutton" ><i class="fa fa-close fa-3x"></i></a>');
                 $element.append(elt);
                  elt.on('click',function(){
                     $timeout(function(){
@@ -677,7 +680,7 @@ var PICASA_ID='116763107480158322881';
           },*/
           template:/*'<div>{{album.title.$t}}<img ng-src="{{album.media$group.media$thumbnail[0].url}}"/></div>'*/ ' ' +
           '<div class="video-playlist-tile" tile-size="wide" >'+
-            '<a href="#" ng-click="showAlbum($index)">'+
+            '<a  ng-click="showAlbum($index)">'+
                 '<div class="video-tile-thumbnail " >' +
                     '<div class="video-tile-img">' +
                         '<img ng-src="{{album.media$group.media$thumbnail[0].url}}"/>' +
