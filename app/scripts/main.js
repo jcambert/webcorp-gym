@@ -177,6 +177,8 @@ var PICASA_ID='116763107480158322881';
 
     app.run(['$rootScope','$state','GApi', 'GAuth','youtube.service',function($rootScope,$state,GApi, GAuth,youtube){
          
+         $rootScope.state=$state;
+         console.dir($rootScope.state);
          GAuth.setClient(CLIENT_KEY);
          GApi.load('oauth2', 'v2');
          GApi.load('youtube','v3');

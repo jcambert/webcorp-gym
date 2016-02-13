@@ -105,7 +105,7 @@
    
    var calendar=angular.module('angular.calendar',[]);
    calendar.factory('events',['$resource',function($resource){
-        return $resource('https://www.googleapis.com/calendar/v3/calendars/:calendarid/events?timeMin=:timemin&maxResults=:maxresults&fields=description%2Citems&key=:key');   
+        return $resource('https://www.googleapis.com/calendar/v3/calendars/:calendarid/events?orderBy=startTime&singleEvents=true&timeMin=:timemin&maxResults=:maxresults&fields=description%2Citems&key=:key');   
     }]);
     
     calendar.service('calendar.service',['$q','events',function($q,$events){
