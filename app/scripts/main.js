@@ -289,7 +289,14 @@ var PICASA_ID='116763107480158322881';
         }catch(e){
             
         }
-            
+           
+        $scope.close = function(){
+            $scope.showSlide=false;
+        }
+        $scope.open = function(){
+            $scope.showSlide=true;
+        } 
+        
         $photos.getAlbums(PICASA_ID,token).then(function(albums){
           //  console.dir(albums);
           $scope.albums=_.filter(albums.feed.entry,function(album){
@@ -297,14 +304,14 @@ var PICASA_ID='116763107480158322881';
                     return album.gphoto$albumType.$t!="ScrapBook" && album.gphoto$albumType.$t!="ProfilePhotos";
                 return true;
           });
-          console.dir($scope.albums);
+          //console.dir($scope.albums);
         });
         
         $scope.showAlbum = function(index){
           $photos.getPhotos(PICASA_ID,$scope.albums[index].gphoto$id.$t,token).then(function(photos){
              $scope.slides=photos.feed.entry; 
-             $scope.showSlide=true;
-             console.dir($scope.slides);
+             $scope.open();
+             //console.dir($scope.slides);
           });
           //$scope.slides= $scope.albums[index];
           //$scope.showSlide=true;
@@ -321,7 +328,8 @@ var PICASA_ID='116763107480158322881';
         for (var i = 0; i < 4; i++) {
             $scope.addSlide();
         }*/
-        $scope.showSlide=false;
+        $scope.close();
+        
     }]);
 
     app.controller('AdminCtrl',['$scope','$window','photos.service',function($scope,$window,$photos){
@@ -448,6 +456,50 @@ var PICASA_ID='116763107480158322881';
         ];
         $scope.opened=true;
     }]);
+    
+    app.directive('carousel',[function(){
+        return {
+            restrict:'E',
+            replace:true,
+            transclude:true,
+            template:'<div ng-transclude></div>'
+        }
+    }]); 
+    
+    app.directive('closeButton',['$timeout',function($timeout){
+        return{
+            restrict:'A',
+            replace:true,
+            
+            link:function($scope,$element,$attrs,$ctrl,$transclude){
+                var elt=angular.element('<a role="button" href="#" class="closebutton" ><i class="fa fa-close fa-3x"></i></a>');
+                $element.append(elt);
+                 elt.on('click',function(){
+                    $timeout(function(){
+                        $scope.close();
+                        //alert('toto');
+                    });
+                });
+                /*var clone=$transclude(function(clone){
+                    
+                })
+                $element.append(clone);*/
+               /* $transclude(function(clone){
+                    var ptag=angular.element(clone[1]);
+                    var elt=angular.element('<a href="#" class="closebutton" ><i class="fa fa-close fa-3x"></i></a>');
+                    ptag.append(elt);
+                    elt.on('click',function(){
+                        $timeout(function(){
+                            alert('toto');
+                        });
+                    });
+                    console.dir($element);
+                    $element.append(ptag);
+                });*/
+                
+            }
+        }
+    }])
     
     app.directive("page",[function(){
         return{

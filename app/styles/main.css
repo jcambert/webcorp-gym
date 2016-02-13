@@ -8681,6 +8681,33 @@ body {
 .page {
   border-width: 2px;
 }
+.carousel-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  background-color: #333333;
+}
+span.glyphicon.glyphicon-chevron-left,
+span.glyphicon.glyphicon-chevron-right,
+.closebutton {
+  opacity: 0.5;
+  transition: all 0.5s;
+  color: #b500ff;
+}
+span.glyphicon.glyphicon-chevron-left:hover,
+span.glyphicon.glyphicon-chevron-right:hover,
+.closebutton:hover {
+  opacity: 1;
+  color: #6e0062;
+}
+.closebutton {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
 /* START VIEN TRANSITION */
 [ui-view].ng-enter,
 [ui-view].ng-leave {

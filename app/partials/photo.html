@@ -1,13 +1,17 @@
 <page title="Photos">
     <photo-gallery albums="albums" ng-hide="showSlide"/>
-    <uib-carousel interval="3000" no-wrap="noWrapSlides" ng-show="showSlide">
-      <uib-slide ng-repeat="slide in slides" active="slide.active" index="$index">
-        <img ng-src="{{slide.content.src}}" style="margin:auto;">
-        <div class="carousel-caption">
-            <h4>{{slide.summary.$t}}</h4>
-         <!-- <h4>{{slide.title.$t}}</h4>
-          <p>{{slide.summary.$t}}</p>-->
-        </div>
-      </uib-slide>
-    </uib-carousel>
+    
+  <carousel class="carousel-wrapper" close-button ng-show="showSlide">
+        
+        <uib-carousel interval="3000" no-wrap="noWrapSlides" close-button>
+            <uib-slide ng-repeat="slide in slides" active="slide.active" index="$index">
+                <img ng-src="{{slide.content.src}}" style="margin:auto;">
+                <div class="carousel-caption">
+                    <h4>{{slide.summary.$t}}</h4>
+                <!-- <h4>{{slide.title.$t}}</h4>
+                <p>{{slide.summary.$t}}</p>-->
+                </div>
+            </uib-slide>
+        </uib-carousel>
+    </carousel>
 </page>
