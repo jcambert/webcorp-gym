@@ -35,7 +35,7 @@ var PICASA_ID='116763107480158322881';
     ]);
     
     app.config(['$stateProvider','$urlRouterProvider','$locationProvider','$provide',function($state,$route,$locationProvider,$provide){
-        $provide.decorator("$sanitize", function($delegate, $log){
+        /*$provide.decorator("$sanitize", function($delegate, $log){
             return function(text, target){
     
                 var result = $delegate(text, target);
@@ -45,7 +45,7 @@ var PICASA_ID='116763107480158322881';
                 return result;
             };
         });
-        
+        */
        $route.otherwise("/");
        
        $state
@@ -242,9 +242,7 @@ var PICASA_ID='116763107480158322881';
          
     }]);
     
-    app.controller('VideoBgCtrl',['$scope',function($scope){
-        $scope.videoId='tzoDDEAsjF0';
-    }]);
+    
      app.controller('MainCtrl', ['$scope','GAuth', '$state', function ($scope, GAuth, $state) {
        
         $scope.flipped=true;
@@ -925,7 +923,23 @@ var PICASA_ID='116763107480158322881';
 			
 		}]
 	);
-    
+    app.controller('VideoBgCtrl',['$scope','$timeout','$interval','youtube.service',function($scope,$timeout,$interval,youtube){
+       $scope.videoId='tzoDDEAsjF0';
+        youtube.getVideos(CHANNEL_ID, API_KEY).then(function(videos){
+            $scope.videos=videos.items;
+            console.dir($scope.videos);
+             $timeout(randomVideo);
+        });
+       
+        var randomVideo = function(){
+             var index= Math.floor((Math.random()*$scope.videos.length));
+             $scope.videoId=$scope.videos[index].id.videoId;
+             console.log('random video:'+index + ' videoid:'+$scope.videoId);
+        };
+        
+        $interval(randomVideo,10000);
+        
+    }]);
     app.controller('VideoPlaylistCtrl',['$scope','$state','$stateParams','youtube.service',function($scope,$state,$stateParams,youtube){
        console.dir($stateParams);
         var playlistid=$stateParams.playlistid;

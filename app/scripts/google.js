@@ -26,10 +26,20 @@
        
    }]);
    
-   youtube.service('youtube.service',['$rootScope','$http', '$q','playlists','playlistItems',function($rootScope,$http,$q,playlists,playlistItems){
+   youtube.factory('videos',['$resource',function($resource){
+    return $resource('https://www.googleapis.com/youtube/v3/search?key=:key&channelId=:channelId&part=snippet,id&order=date&maxResults=20');
+   }]);
+   
+   youtube.service('youtube.service',['$rootScope','$http', '$q','playlists','playlistItems','videos',function($rootScope,$http,$q,playlists,playlistItems,videos){
       // var gapi=$rootScope.gapi;
        //console.dir(gapi);
-       
+       this.getVideos = function(channel,key){
+           var d=$q.defer();
+           videos.get({channelId:channel,key:key},function(p){
+              d.resolve(p); 
+           });
+           return d.promise;
+       }
         this.getPlaylists = function(channel,key,options){
             var d=$q.defer();
 		    if($rootScope.gapi.login && false){
