@@ -152,4 +152,29 @@
             return d.promise;
         }
    }]);
+   
+   var maps = angular.module('angular.maps',[]);
+   maps.directive('map',['$compile','$sce',function($compile,$sce){
+       return{
+           restrict:'E',
+           //replace:true,
+           scope:{
+               place:'@place'
+           },
+           //template:'<iframe width="425" height="350" frameborder="0" scrolling="no"  marginheight="0" marginwidth="0"   ng-src="https://maps.google.com/maps?&amp;q={{place}}&amp;output=embed"></iframe>',
+           //template:'<div>{{place}}</div>',
+           link:function($scope,$element,$attrs){
+               //$scope.place="toto";
+               var tpl= $sce.trustAsHtml('<iframe width="425" height="350" frameborder="0" scrolling="no"  marginheight="0" marginwidth="0"   src="https://maps.google.com/maps?&amp;q={{place}} ;output=embed"></iframe>');
+               //var elt=angular.element(tpl);
+               console.log('maps');
+               console.dir($scope.place);
+               console.dir(tpl);
+               var content=$compile(tpl)($scope);
+               console.dir(content.html());
+               $element.html(angular.element(content));
+           }
+           
+       }
+   }]);
 }(angular,gapi);

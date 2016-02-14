@@ -8681,6 +8681,12 @@ body {
 .page {
   border-width: 2px;
 }
+.videobg-wrapper {
+  position: aboslute;
+  top: 0;
+  left: 0;
+  height: 500px;
+}
 .fullscreen-wrapper {
   position: fixed;
   top: 0;
@@ -8708,7 +8714,7 @@ span.glyphicon.glyphicon-chevron-right:hover,
   right: 0;
   top: 0;
 }
-/* START VIEN TRANSITION */
+/* START VIEW TRANSITION */
 [ui-view].ng-enter,
 [ui-view].ng-leave {
   position: absolute;

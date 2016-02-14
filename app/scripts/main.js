@@ -24,16 +24,28 @@ var PICASA_ID='116763107480158322881';
         'com.2fdevs.videogular.plugins.overlayplay',
         'com.2fdevs.videogular.plugins.poster',
         'info.vietnamcode.nampnq.videogular.plugins.youtube',
-        
+        'angularVideoBg',
         'angular.gapi',
         'angular.youtube',
         'angular.blogger',
         'angular.calendar',
         'angular.photos',
-        'angular.gallery'
+        'angular.gallery',
+        'angular.maps'
     ]);
     
-    app.config(['$stateProvider','$urlRouterProvider','$locationProvider',function($state,$route,$locationProvider){
+    app.config(['$stateProvider','$urlRouterProvider','$locationProvider','$provide',function($state,$route,$locationProvider,$provide){
+        $provide.decorator("$sanitize", function($delegate, $log){
+            return function(text, target){
+    
+                var result = $delegate(text, target);
+                $log.info("$sanitize input: " + text);
+                $log.info("$sanitize output: " + result);
+    
+                return result;
+            };
+        });
+        
        $route.otherwise("/");
        
        $state
@@ -230,7 +242,9 @@ var PICASA_ID='116763107480158322881';
          
     }]);
     
-    
+    app.controller('VideoBgCtrl',['$scope',function($scope){
+        $scope.videoId='tzoDDEAsjF0';
+    }]);
      app.controller('MainCtrl', ['$scope','GAuth', '$state', function ($scope, GAuth, $state) {
        
         $scope.flipped=true;
@@ -262,14 +276,39 @@ var PICASA_ID='116763107480158322881';
         }
     }]);
     
+    app.directive('compile',['$compile',function($compile){
+        return{
+            restrict:'A',
+            link:function($scope,$element,$attrs){
+                console.log('compile');
+                console.dir($element.contents());
+                $compile($element.contents())($scope);
+            }
+        } 
+        
+    }])
+    
     app.controller('PostCtrl',['$scope','$stateParams','$sce','blogger.service',function($scope,$stateParams,$sce,$blogger){
         $scope.loaded=false;
         $scope.postid=$stateParams.postid;
         //console.log('want read post:'+$scope.postid);
          $blogger.getPost(BLOG_ID,$scope.postid,API_KEY).then(function(post){
-            $scope.post=$sce.trustAsHtml( post.content);
-             $scope.title=$sce.trustAsHtml(post.title);
-             $scope.loaded=true;
+             angular.element(document).injector().invoke(function($compile){
+                 var p=angular.element(post.content);
+                 
+                 //$scope.post= $sce.trustAsHtml( post.content);
+                 $compile(p)($scope);
+                 console.dir(p);
+                 $scope.post=p.html();
+                 console.dir($scope.post);
+                
+                $scope.title=$sce.trustAsHtml(post.title);
+                $scope.loaded=true;
+             });
+            
+            /*$scope.post= $sce.trustAsHtml( post.content);
+            $scope.title=$sce.trustAsHtml(post.title);
+            $scope.loaded=true;*/
         });
     }]);
     
