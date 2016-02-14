@@ -291,7 +291,7 @@ var PICASA_ID='116763107480158322881';
         $scope.postid=$stateParams.postid;
         //console.log('want read post:'+$scope.postid);
          $blogger.getPost(BLOG_ID,$scope.postid,API_KEY).then(function(post){
-             angular.element(document).injector().invoke(function($compile){
+            /* angular.element(document).injector().invoke(function($compile){
                  var p=angular.element(post.content);
                  
                  //$scope.post= $sce.trustAsHtml( post.content);
@@ -302,11 +302,11 @@ var PICASA_ID='116763107480158322881';
                 
                 $scope.title=$sce.trustAsHtml(post.title);
                 $scope.loaded=true;
-             });
+             });*/
             
-            /*$scope.post= $sce.trustAsHtml( post.content);
+            $scope.post= $sce.trustAsHtml( post.content);
             $scope.title=$sce.trustAsHtml(post.title);
-            $scope.loaded=true;*/
+            $scope.loaded=true;
         });
     }]);
     
